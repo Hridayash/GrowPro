@@ -6,9 +6,9 @@ export default function Home(){
     
         <h1>Hello User this is home page</h1>
         <div className="flex gap-6 ">
-        <Box />
-        <Box />
-        <Box />
+            <Box />
+            <Box />
+            <Box />
         </div>
 
 
