@@ -21,6 +21,9 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
+//setting up blacklisted tokens
+const blacklist = new Set();
+
 //Restful api
 
 app.get('/', (req,res)=>{
@@ -93,6 +96,10 @@ function authenticateToken (req,res,next){
         console.log('No token found')
         return res.sendStatus(401)
     }
+    if(blacklist.has(token)){
+        console.log('token is blacklisted')
+        return res.sendStatus(403);
+    }
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,user)=>{
         if(err){
@@ -105,6 +112,7 @@ function authenticateToken (req,res,next){
 
 
 }
+//Getting the user information
 
 app.get('/user' , authenticateToken , async(req,res)=>{
     try{
@@ -127,6 +135,14 @@ app.get('/user' , authenticateToken , async(req,res)=>{
     }
 })
 
+
+
+//logging out 
+app.post('/logout' , authenticateToken , (req,res) =>{
+    const token = req.headers['authorization'].split(' ')[1];
+    blacklist.add(token);
+    res.json({message: 'logout successful'})
+})
    
     
 app.listen(3002, ()=>{

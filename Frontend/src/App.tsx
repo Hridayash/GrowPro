@@ -1,6 +1,5 @@
+import AuthRoute from "./components/authcheck/authcheck"
 import Home from "./components/Home/home"
-import Nav from "./components/Navigation/nav"
-import SideBar from "./components/sidebar/sidebar"
 import Login from "./components/Signup/Login"
 import Signup from "./components/Signup/signup"
 import {Routes, Route, BrowserRouter } from "react-router-dom"
@@ -13,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element ={<Signup />} />
         <Route path ="/login" element  ={<Login />} />
-        <Route path = "/home" element = {<Home />} />
+        <Route path = "/home" element = {<AuthRoute> <Home /></AuthRoute>} />
 
     
       </Routes>
