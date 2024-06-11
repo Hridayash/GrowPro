@@ -1,35 +1,54 @@
+//initializing all the necessary data
+
 import { PrismaClient } from "@prisma/client";
-import e from "express";
+import express from "express";
 import cors from "cors"
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
+import dotenv from "dotenv"
 
 
 
+//setting up the apps
 
-const app = e();
+const app = express()
 const prisma = new PrismaClient()
 
-app.use(e.json());
+//setting up environment variable 
+dotenv.config();
+
+//setting up the middlewares 
+app.use(express.json());
 app.use(cors());
+
+//Restful api
 
 app.get('/', (req,res)=>{
     res.send("hello world")
 })
 
+//Creating new user with hased password 
 app.post('/createUser' , async(req,res)=>{
-    const { Email, Name, Password} = req.body;
+    try{
+    const salt = await bcrypt.genSalt()
+    const hashedPassword = await  bcrypt.hash(req.body.Password, salt)
+    
+
+    const user =  { Email : req.body.Email, Name : req.body.Name, Password: hashedPassword};
     const newUser = await prisma.user.create({
-        data:{
-           
-            Email,
-            Name,
-            Password
-        },
+        data:user
     })
     res.json(newUser);
     console.log("success")
+} catch(error){
+    res.status(500).json({error: "failed to create user"});
+    console.log("Error:" , error)
+}
 })
 
-app.post('/login' , async(req,res) =>{
+//loggin then in aka valiading the user credentials
+
+app.post('/login', async(req,res) =>{
     const {Email, Password} =req.body;
 
     try{
@@ -42,14 +61,70 @@ app.post('/login' , async(req,res) =>{
         if(!findUser){
             return res.status(400).json({error:"user not found"})
         }
-        if(findUser.Password !== Password){
+        const isPasswordValid = await bcrypt.compare(Password, findUser.Password)
+        if(!isPasswordValid){
             return res.status(400).json({error:"invalid password"});
         }
-        res.json({message:"login SuccessFul" , findUser})
+      
+            //Authentication Complete
+
+
+       const user = {email: findUser.Email, name: findUser.Name}
+
+       const accessToken =  jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+       res.json({ message:"login SuccessFul" , findUser, accessToken : accessToken, name:findUser.Name ,})
+       console.log(accessToken)
 
         } catch(err) {
             console.log("error in:",  err)
         }
+        
+
+})
+
+
+
+//Middleware to authenticate the token
+
+function authenticateToken (req,res,next){
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(" ")[1];
+    if(token == null) {
+        console.log('No token found')
+        return res.sendStatus(401)
+    }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,user)=>{
+        if(err){
+            console.log('token error' , err.message)
+            return res.sendStatus(403)
+        } 
+        req.user = user
+        next()
+    })
+
+
+}
+
+app.get('/user' , authenticateToken , async(req,res)=>{
+    try{
+        const user = await prisma.user.findUnique({
+            where:{
+                Email : req.user.email
+            },
+            select:{
+                Name: true,
+                Email: true
+            }
+        });
+        if(!user){
+            return res.status(404).json({error: 'User not found '})
+        }
+        res.json(user);
+    }catch(err){
+        console.log('error:' , err)
+        res.status(500).json({error: "some error in the house"})
+    }
 })
 
    

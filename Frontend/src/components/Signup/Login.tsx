@@ -24,8 +24,12 @@ export default function Login(){
     function Submit(e:any){
         e.preventDefault();
         axios.post('http://localhost:3002/login' ,   user )
-        .then(result =>{console.log(result);
-            navigate('/home'); 
+        .then(result =>{
+            const {accessToken} =result.data
+            console.log(accessToken)
+            localStorage.setItem('accessToken' , accessToken)
+            navigate('/home');
+            
             
         
         })
