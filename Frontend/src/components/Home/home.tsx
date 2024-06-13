@@ -44,7 +44,7 @@ export default function Home(){
         <div  className="flex ">
         <SideBar/>
        
-        <main className="p-6">
+        <main className="p-6 ml-60 mt-12">
     
         <h1>Hello <strong>{user}</strong> this is home page</h1>
         <div className="flex gap-6 ">

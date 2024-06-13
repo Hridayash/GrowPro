@@ -9,7 +9,7 @@ export default function SideBar (){
     const linkStyle =  "hover:bg-slate-100 flex gap-2 justify-right items-center";
     return(
         <>
-        <nav className=" bg-slate-100 w-60 h-screen flex  flex-col gap-8 px-6 pt-6">
+        <nav className=" bg-slate-100 w-60 h-screen flex  flex-col gap-8 px-6 pt-6 mt-12 fixed left-0">
        
         <ul className="flex  flex-col gap-8">
                 <li className={linkStyle}>

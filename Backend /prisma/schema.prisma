@@ -19,5 +19,19 @@ model User {
   Email String @unique
   Name String
   Password String
+  Profile Profile?
+
+}
+
+model Profile{
+  Id Int @id @default(autoincrement())
+  UserId Int @unique
+  User User @relation(fields: [UserId] , references: [Id])
+  FullName String
+  Position String
+  Address String
+  Education Json
+  Experience Json
+  Skills Json
 
 }
