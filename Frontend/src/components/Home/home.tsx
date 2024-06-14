@@ -2,8 +2,7 @@ import { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Box from "../Box/ sectionsBox";
-import Nav from "../Navigation/nav";
-import SideBar from "../sidebar/sidebar";
+
 
 export default function Home(){
 
@@ -40,11 +39,8 @@ export default function Home(){
 
     return(
         <>
-        <Nav name={user}/>
-        <div  className="flex ">
-        <SideBar/>
        
-        <main className="p-6 ml-60 mt-12">
+   
     
         <h1>Hello <strong>{user}</strong> this is home page</h1>
         <div className="flex gap-6 ">
@@ -55,8 +51,7 @@ export default function Home(){
 
 
 
-        </main>
-        </div>
+       
         </>
  
     );

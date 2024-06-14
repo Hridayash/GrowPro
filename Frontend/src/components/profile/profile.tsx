@@ -81,15 +81,12 @@ export default function Profile(){
 
     return(
         <>
-        <Nav name = {user} />
-        <div className="flex">
-        <SideBar />
-        <main className="p-3 bg-slate-200 w-[90%] mt-12 ml-60">
+        
             {/* users basic details  */}
-            <div className="w-[80%] mx-[10%] ">
+            <div className="w-[90%] mx-[10%] ">
                 {/* cover picture */}
                 <div className="bg-gray-400 w-full h-56 flex  justify-end p-6 rounded-t-xl">
-                   <Link to="/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link>
+                   <Link to="/home/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link>
                 </div>
                 {/* user details */}
                 <div className="flex items-center justify-between bg-white rounded-b-xl">
@@ -168,8 +165,7 @@ export default function Profile(){
                 
 
             </div>
-        </main>
-        </div>
+       
         </>
     );
 }

@@ -49,7 +49,7 @@ export default function UpdateProfile(){
     })
     .then(result =>{
         console.log(result);
-        navigate('/profile')
+        navigate('/home/profile')
         
     })
     .catch(err =>console.log(err));
@@ -62,8 +62,8 @@ export default function UpdateProfile(){
 
     return (
         <>
-        <div>
-            <form onSubmit={submit} className="flex flex-col items-center bg-slate-100 w-[40%] gap-6 p-6">
+      
+            <form onSubmit={submit} className="flex flex-col items-center bg-slate-100  gap-6 p-6 w-96">
                 <h1>Edit Profile</h1>
                 <input type="text" placeholder="FullName" name="FullName" className= {inputStyle}  onChange={handleChange} value = {profile.FullName} />
                 <input type="text" placeholder="Position" name ="Position" className= {inputStyle} onChange={handleChange} value = {profile.Position}/>
@@ -74,10 +74,10 @@ export default function UpdateProfile(){
 
                 <div>
                 <button className="bg-green-500 text-white p-2 w-20 rounded-xl">Save</button>
-               <Link to='/profile'><button className="bg-red-500 text-white p-2 w-20 rounded-xl">Cancel</button></Link> 
+               <Link to='/home/profile'><button className="bg-red-500 text-white p-2 w-20 rounded-xl">Cancel</button></Link> 
                 </div>
             </form>
-        </div>
+        
            
         </>
     );
