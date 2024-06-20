@@ -46,7 +46,7 @@ export default function HomeEmployee(){
         <>
         <NavEmployee name={user}/>
         <div  className="flex ">
-        <SideBarEmployee/>
+        
        
         <main className="p-6 ml-60 mt-12">
     

@@ -49,7 +49,7 @@ export default function UpdateProfile(){
     })
     .then(result =>{
         console.log(result);
-        navigate('/home/profile')
+        navigate('/profile')
         
     })
     .catch(err =>console.log(err));

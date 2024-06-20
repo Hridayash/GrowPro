@@ -28,7 +28,7 @@ export default function Login(){
             const {accessToken} =result.data
             console.log(accessToken)
             localStorage.setItem('accessToken' , accessToken)
-            navigate('/home');
+            navigate('/');
             
             
         

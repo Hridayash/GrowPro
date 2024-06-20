@@ -86,7 +86,7 @@ export default function Profile(){
             <div className="w-[90%] mx-[10%] ">
                 {/* cover picture */}
                 <div className="bg-gray-400 w-full h-56 flex  justify-end p-6 rounded-t-xl">
-                   <Link to="/home/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link>
+                   <Link to="/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link>
                 </div>
                 {/* user details */}
                 <div className="flex items-center justify-between bg-white rounded-b-xl">

@@ -1,13 +1,14 @@
 
 import { Outlet } from 'react-router-dom';
 import Nav from "../Navigation/nav";
-import SideBar from "../sidebar/sidebar";
+import NewSideBar from "../sidebar/newSidebar";
 import { useState , useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Layout = () => {
     const [user, setUser] = useState(null);
+    const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,8 @@ const Layout = () => {
           }
         });
         setUser(response.data.Name);
+        setRole(response.data.Role);
+        console.log(response.data.Role)
       } catch (err) {
         console.log(err);
         if (err.response && err.response.status === 401) {
@@ -39,7 +42,7 @@ const Layout = () => {
         <>
             <Nav name={user}/>
             <div className="flex">
-                <SideBar />
+                <NewSideBar role={role} />
                 <main className="p-6 ml-60 mt-12">
                     <Outlet />
                 </main>
