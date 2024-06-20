@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Nav from "../Navigation/nav";
-import SideBar from "../sidebar/sidebar";
+
 import axios from "axios";
 import { FaPen } from "react-icons/fa";
 import { Link } from "react-router-dom";
