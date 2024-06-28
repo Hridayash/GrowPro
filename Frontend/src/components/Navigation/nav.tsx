@@ -9,22 +9,26 @@ export default function Nav({name}){
 
     const [profileOption, setProfileOption] = useState(false);
 
-    function logout(){
-
-           
-
-            const token = localStorage.getItem('accessToken');
-            axios.post('http://localhost:3002/logout' , {} , {
-                headers : {Authorization: `Bearer ${token}` }
-            })
-            .then(()=>{
-                localStorage.removeItem('accessToken');
-                navigate('/login')
-            })
-            .catch(err =>{
-                console.log(err)
-            })
+    function logout() {
+        const token = localStorage.getItem('accessToken');
+        
+        if (!token) {
+            console.error('Access token not found in localStorage');
+            return;
+        }
+    
+        axios.post('http://localhost:3002/logout', {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => {
+            localStorage.removeItem('accessToken');
+            navigate('/login');
+        })
+        .catch(err => {
+            console.error('Error logging out:', err);
+        });
     }
+    
     function toggleProfile(){
         setProfileOption(prevState => !prevState);
     }
@@ -36,23 +40,7 @@ export default function Nav({name}){
         <nav className="fixed top-0 left-0 w-full flex gap-6 items-center justify-between px-6 h-12 border-b-2 z-10 bg-white mb-13">
             <Link to="/"><h1 className=" font-black">GrowPro</h1></Link>
             
-            {/* <ul className="flex gap-6">
-                <li>
-                    Dashboard
-                </li>
-                <li>
-                   Training
-                </li>
-                <li>
-                    Reviews
-                </li>
-                <li>
-                   Directory
-                </li>
-                <li>
-                    Benefits
-                </li>
-            </ul> */}
+     
             <button className="flex items-center gap-2" onClick={toggleProfile}>
                 <p>{name}</p>
                 <div className=" bg-yellow-500 rounded-full w-9 h-9"></div>

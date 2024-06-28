@@ -1,37 +1,48 @@
+import { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function jobDetail(){
+   const [Title , setTitle ] = useState('')
+   const[Description , setDescription] =  useState('')
+   const navigate = useNavigate()
+
+   
+
+const  handleSubmit = async (e) =>{
+        e.preventDefault();
+        try{
+            const response = await axios.post('http://localhost:3002/job' , {Title, Description})
+            console.log(response.data)
+
+           setTitle("")
+           setDescription("")
+
+           navigate('/job-postings')
+        }catch(err){
+            console.log(err)
+            alert("faied to add user")
+        }
+        
+    }
+
     return(
         <>
-            <div className="">
-                <h1 className="font-bold text-3xl">Back End developer</h1>
-                <div className="flex gap-4">
-                    <p>Canada</p>
-                    <p>Posted date</p>
-                </div>
-               <div>
-                <h1 className="font-bold text-2xl">Description</h1>
-                <p>
-                Ascendion is a full-service digital engineering solutions company. We make and manage software
-                platforms and products that power growth and deliver captivating experiences to consumers and employees.
-                Our engineering, cloud, data, experience design, and talent solution capabilities accelerate transformation 
-                and impact for enterprise clients. Headquartered in New Jersey, our workforce of 6,000+ Ascenders delivers solutions from around the globe. Ascendion is built differently to engineer the next.
-
-                    
-                </p>
-               </div>
-               <div>
-                 <h1 className="font-bold text-2xl">Requirements</h1>
-                 <ul>
-                    <li>2 YEARS expereince in Azure</li>
-                    <li>2 YEARS expereince in Azure</li>
-                    <li>2 YEARS expereince in Azure</li>
-                    <li>2 YEARS expereince in Azure</li>
-                 </ul>
-               </div>
-
-               <button className="rounded-lg bg-blue-500 text-white p-2 text-xl">Apply</button>
-
-            </div>
+            <form onSubmit={handleSubmit}>
+                <input type='text' placeholder='Title' value={Title} onChange={(e)=>setTitle(e.target.value)}   />
+                <ReactQuill theme="snow" value={Description} onChange={setDescription} />
+                <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Post
+                </button>
+                
+            </form>
+            
+            
             
         </>
     );

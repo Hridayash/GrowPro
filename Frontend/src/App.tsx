@@ -11,6 +11,9 @@ import EmployeeTable from "./components/admin/employeeTable";
 import EditEmployee from "./components/admin/editEmployee";
 import JobDetails from "./components/manager/jobDetails";
 import AuthRoute from "./components/authcheck/authcheck";
+import Myteam from "./components/manager/myteam";
+import ProfileRead from "./components/profile/profileRead";
+import AllJobs from "./components/manager/jobs";
 
 function App() {
   return (
@@ -21,12 +24,15 @@ function App() {
         <Route path="/" element={<AuthRoute><Layout /></AuthRoute>}>
           <Route index element={<MainDashboard/>} />
           <Route path="profile" element={<Profile />} />
+          <Route path="profile/:id" element={<ProfileRead/>} />
           <Route path="editProfile" element={<UpdateProfile />} />
           <Route path="employeeHome" element={<HomeEmployee />} />
           <Route path="add-user" element = {<AddUserForm />} />
           <Route path="manage-user" element = {<EmployeeTable />} />
           <Route path="manage-user/edit-user/:id" element = {<EditEmployee />} />
-          <Route path = 'job-postings' element = {<JobDetails/>} />
+          <Route path = 'job-postings' element = {<AllJobs/>} />
+          <Route path = 'create-job' element = {<JobDetails/>} />
+          <Route path = '/my-team' element = {<Myteam/>} />
         </Route>
       </Routes>
     </BrowserRouter>

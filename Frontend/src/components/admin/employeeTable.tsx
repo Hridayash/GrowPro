@@ -10,7 +10,7 @@ const EmployeeList = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/employeeList');
+        const response = await axios.get('http://localhost:3002/user/employeeList');
         setEmployees(response.data);
       } catch (error) {
         console.error('Error fetching employees:', error);
@@ -22,7 +22,7 @@ const EmployeeList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3002/delete-user/${id}`);
+      await axios.delete(`http://localhost:3002/user/delete-user/${id}`);
       setEmployees(prevEmployees => prevEmployees.filter(employee => employee.Id !== id));
     } catch (error) {
       console.error('Error deleting employee:', error);

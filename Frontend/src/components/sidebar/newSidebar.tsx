@@ -17,6 +17,7 @@ const NewSidebar = ({ role }) => {
     { name: 'My Team', path: '/my-team' },
     { name: 'Job Postings', path: '/job-postings' },
     { name: 'Performance Reviews', path: '/performance-reviews' },
+    { name: 'Training Material', path: '/training-material' },
   ];
 
   const employeeLinks = [
@@ -53,6 +54,9 @@ const NewSidebar = ({ role }) => {
               {link.name === 'Manage Users' && <FaUserFriends className="text-2xl" />}
               {link.name === 'Job Postings' && <RiBook2Fill className="text-2xl" />}
               {link.name === 'Reports' && <AiOutlineTrophy className="text-2xl" />}
+              {link.name === 'My Team' && <FaUserFriends className="text-2xl" />}
+              {link.name === 'Performance Reviews' && <AiOutlineTrophy className="text-2xl" />}
+              {link.name === 'Training Material' && <RiBook2Fill className="text-2xl" />}
               <span>{link.name}</span>
             </a>
           </li>

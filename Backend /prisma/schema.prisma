@@ -28,7 +28,7 @@ model User {
 model Profile{
   Id Int @id @default(autoincrement())
   UserId Int @unique
-  User User @relation(fields: [UserId] , references: [Id])
+  User User @relation(fields: [UserId] , references: [Id], onDelete: Cascade)
   FullName String
   Position String
   Address String
@@ -37,3 +37,12 @@ model Profile{
   Skills Json
 
 }
+ model Job {
+  Id Int @id @default( autoincrement())
+  Title String 
+  DatePosted DateTime   @default(now())
+  Description String
+ 
+
+
+ }

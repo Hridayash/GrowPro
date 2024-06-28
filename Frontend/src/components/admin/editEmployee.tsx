@@ -22,7 +22,7 @@ export default function EditEmployee() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get<Employee>(`http://localhost:3002/get-user/${employeeId}`);
+        const response = await axios.get<Employee>(`http://localhost:3002/user/get-user/${employeeId}`);
         setUser(response.data);
       } catch (err) {
         console.error(err);
