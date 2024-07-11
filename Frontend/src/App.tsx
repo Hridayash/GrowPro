@@ -9,11 +9,13 @@ import MainDashboard from "./components/Dashboard/mainDashboard";
 import AddUserForm from "./components/admin/addUser";
 import EmployeeTable from "./components/admin/employeeTable";
 import EditEmployee from "./components/admin/editEmployee";
-import JobDetails from "./components/manager/jobDetails";
+import JobPost from "./components/manager/jobPost";
 import AuthRoute from "./components/authcheck/authcheck";
 import Myteam from "./components/manager/myteam";
 import ProfileRead from "./components/profile/profileRead";
 import AllJobs from "./components/manager/jobs";
+import JobDetail from "./components/manager/jobDetails";
+import TrainingMaterial from "./components/TrainingMaterial/training";
 
 function App() {
   return (
@@ -31,8 +33,10 @@ function App() {
           <Route path="manage-user" element = {<EmployeeTable />} />
           <Route path="manage-user/edit-user/:id" element = {<EditEmployee />} />
           <Route path = 'job-postings' element = {<AllJobs/>} />
-          <Route path = 'create-job' element = {<JobDetails/>} />
+          <Route path = 'job-postings/:id' element = {<JobDetail/>} />
+          <Route path = 'create-job' element = {<JobPost/>} />
           <Route path = '/my-team' element = {<Myteam/>} />
+          <Route path = '/training-material' element = {<TrainingMaterial/>} />
         </Route>
       </Routes>
     </BrowserRouter>
