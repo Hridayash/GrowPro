@@ -14,9 +14,8 @@ export default function Profile(){
         FullName:"", 
         Position:"", 
         Address:"", 
-        Education:"", 
-        Experience:"", 
-        Skills:""
+        profile:""
+      
 
 
     })
@@ -60,6 +59,8 @@ export default function Profile(){
                 console.log('Profile Data:', response.data);
                 setProfile(response.data);
                 setName(response.data.FullName)
+                console.log(response.data)
+
             } catch (err) {
                 console.log(err);
             }
@@ -83,6 +84,7 @@ export default function Profile(){
         
             {/* users basic details  */}
             <div className="w-[90%] mx-[10%] ">
+            {isEdit && <div className="fixed top-0 left-0 h-screen w-screen bg-gray-200 backdrop-filter backdrop-blur-sm z-20"></div>}
                 {/* cover picture */}
                 <div className="bg-gray-400 w-full h-56 flex  justify-end p-6 rounded-t-xl">
                    <Link to="/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link>
@@ -90,7 +92,7 @@ export default function Profile(){
                 {/* user details */}
                 <div className="flex items-center justify-between bg-white rounded-b-xl">
                     <div className="flex flex-col relative pt-32 p-10">
-                    <div className="h-56 w-56 bg-slate-400 rounded-full border-white border-8 absolute -top-32 left-10"></div>
+                    <div className="h-56 w-56 rounded-full border-white border-8 absolute -top-32 bg-gray-500 left-10 z-10 overflow-hidden"> <img src={profile.ProfileUrl} className="  "/></div>
                     <h1 className=" font-medium text-2xl">{name}</h1>
                     <p>{profile.Position}</p>
                     <p>{profile.Address}</p>

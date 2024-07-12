@@ -36,7 +36,7 @@ async function createNewUser(req,res){
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
         
         // Determine role
-        const role = req.body.Role ? req.body.Role : 'admin';
+        const role = req.body.Role ? req.body.Role : 'manager';
 
         // Creating user object
         const user = { Email: req.body.Email, Name: req.body.Name, Password: hashedPassword, Role: role };
@@ -68,7 +68,10 @@ async function getOneEmployee (req,res){
     
     try {
         // Find user by ID
-        const {id} = parseInt(req.params, 10);
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id)) {
+            return res.status(400).json({ error: "Invalid ID format" });
+        }
         const user = await prisma.user.findUnique({
             where: { Id: id },
             select: { Name: true, Email: true, Role: true }

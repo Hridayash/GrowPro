@@ -43,7 +43,7 @@ const Layout = () => {
             <Nav name={user}/>
             <div className="flex">
                 <NewSideBar role={role} />
-                <main className="p-6 ml-60 mt-12">
+                <main className="p-6 ml-60 mt-12 min-h-full">
                     <Outlet />
                 </main>
             </div>

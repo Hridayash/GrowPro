@@ -7,6 +7,7 @@ import ProfileRouter from './routes/profile.js'
 import LoginRouter from './routes/login.js'
 import LogoutRouter from './routes/logout.js'
 import JobRouter from "./routes/job.js";
+import CourseRouter from './routes/Course.js'
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.use('/profile' , ProfileRouter)
 app.use('/login' , LoginRouter)
 app.use('/logout' , LogoutRouter)
 app.use('/job' , JobRouter)
+app.use('/course' , CourseRouter)
+
 
 
 

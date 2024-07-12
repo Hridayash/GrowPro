@@ -32,11 +32,51 @@ model Profile{
   FullName String
   Position String
   Address String
-  Education Json
-  Experience Json
-  Skills Json
+  ProfileUrl String?
+  CoverUrl String?
+  Education Education?
+  Experience Experience?
+  Certification Certification?
 
 }
+
+model Education{
+
+  Id Int @id @default(autoincrement())
+  InstituteName String
+  Course String
+  GraduationYear Int
+  Grade String
+  Details String
+  ProfileId Int @unique
+  Profile Profile @relation(fields: [ProfileId] , references: [Id], onDelete: Cascade)
+
+}
+model Certification{
+
+  Id Int @id @default(autoincrement())
+  InstituteName String
+  Course String
+  Details String
+  ProfileId Int @unique
+  Profile Profile @relation(fields: [ProfileId] , references: [Id], onDelete: Cascade)
+
+}
+model Experience {
+  Id Int @id @default(autoincrement())
+  Position String
+  Company String
+  StartDate DateTime
+  EndDate  DateTime?
+  ProfileId Int @unique
+  Profile Profile @relation(fields: [ProfileId] , references: [Id], onDelete: Cascade)
+
+
+
+}
+
+
+
  model Job {
   Id Int @id @default( autoincrement())
   Title String 
@@ -45,4 +85,12 @@ model Profile{
  
 
 
+ }
+ model Course {
+  Id Int @id @default(autoincrement())
+  Title String
+  Description String
+  Duration String
+  FileUrl String
+  FileType String
  }

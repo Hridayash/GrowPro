@@ -1,13 +1,35 @@
 import axios from "axios"
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useState  , useEffect} from "react";
 import { Link } from "react-router-dom";
 
 export default function Nav({name}){
     const navigate = useNavigate();
+    const [profile, setProfile] = useState('')
 
 
     const [profileOption, setProfileOption] = useState(false);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            const token = localStorage.getItem("accessToken");
+            try {
+                const response = await axios.get('http://localhost:3002/profile', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+                console.log('Profile Data:', response.data);
+                setProfile(response.data)
+                
+                console.log(response.data)
+
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchUserProfile();
+    }, []);
 
     function logout() {
         const token = localStorage.getItem('accessToken');
@@ -43,7 +65,7 @@ export default function Nav({name}){
      
             <button className="flex items-center gap-2" onClick={toggleProfile}>
                 <p>{name}</p>
-                <div className=" bg-yellow-500 rounded-full w-9 h-9"></div>
+                <div className=" bg-yellow-500 rounded-full w-9 h-9 overflow-hidden"><img src={profile.ProfileUrl}/></div>
                
             </button>
 

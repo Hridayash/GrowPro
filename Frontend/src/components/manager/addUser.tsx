@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const AddUserForm = () => {
-    const naviagte = useNavigate()
+    const navigate = useNavigate()
   const [formData, setFormData] = useState({
     Name: '',
     Email: '',
@@ -34,7 +34,7 @@ const AddUserForm = () => {
         Password: ''
       });
 
-      naviagte('/manage-user')
+      navigate('/my-team');
 
     } catch (error) {
       console.error(error);
@@ -86,7 +86,7 @@ const AddUserForm = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           >
-            <option value="admin">Admin</option>
+            
             <option value="manager">Manager</option>
             <option value="employee">Employee</option>
           </select>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
 interface Employee {
   id?: number;
@@ -11,25 +12,32 @@ interface Employee {
 
 export default function EditEmployee() {
   const { id } = useParams<{ id: string }>();
-  const employeeId = parseInt(id, 10);
+  const navigate = useNavigate();
+  
+  // Log the id to ensure it is defined
+  useEffect(() => {
+    console.log("Employee ID:", id);
+  }, [id]);
+
   const [user, setUser] = useState<Employee>({
     Name: '',
     Email: '',
     Role: ''
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get<Employee>(`http://localhost:3002/user/get-user/${employeeId}`);
-        setUser(response.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getUser();
-  }, [employeeId]);
+    if (id) {
+      const getUser = async () => {
+        try {
+          const response = await axios.get<Employee>(`http://localhost:3002/user/get-user/${id}`);
+          setUser(response.data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      getUser();
+    }
+  }, [id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -38,13 +46,27 @@ export default function EditEmployee() {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await axios.put(`http://localhost:3002/edit-user/${employeeId}`, user);
-      navigate('/manage-user');
-    } catch (err) {
-      console.error(err);
+    if (id) {
+      try {
+        await axios.put(`http://localhost:3002/user/edit-user/${id}`, user);
+        navigate('/my-team');
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3002/user/delete-user/${id}`);
+      // setEmployees(prevEmployees => prevEmployees.filter(employee => employee.Id !== id));
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+    }
+  };
+  
+
+
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -79,19 +101,19 @@ export default function EditEmployee() {
             Role
           </label>
           <select
-            id="role"
+            id="Role"
             name="Role"
             value={user.Role}
             onChange={handleInputChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           >
-            <option value="admin">Admin</option>
+            
             <option value="manager">Manager</option>
             <option value="employee">Employee</option>
           </select>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -99,8 +121,15 @@ export default function EditEmployee() {
             Save
           </button>
           <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+                        onClick={() => handleDelete(id)}
+                      >
+                        Delete
+                        <RiDeleteBin5Line />
+                      </button>
+          <button
             type="button"
-            onClick={() => navigate('/manage-user')}
+            onClick={() => navigate('/my-team')}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Cancel
