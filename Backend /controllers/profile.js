@@ -21,6 +21,7 @@ async function getUserProfile(req, res) {
         res.status(500).json({ error: "Failed to fetch profile" });
     }
 }
+//get all the profile
 
 async function getProfile(req, res) {
     const { id } = req.params;
