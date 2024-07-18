@@ -1,5 +1,7 @@
 
 import { Outlet } from 'react-router-dom';
+import Footer from '../Footer/Footer';
+
 import Nav from "../Navigation/nav";
 import NewSideBar from "../sidebar/newSidebar";
 import { useState , useEffect } from 'react';
@@ -41,14 +43,22 @@ const Layout = () => {
     return (
         <>
             <Nav name={user}/>
+            <Footer />
             <div className="flex">
                 <NewSideBar role={role} />
                 <main className="p-6 ml-60 mt-12 min-h-full">
                     <Outlet />
                 </main>
             </div>
+            
+
+            
+
+            
+           
         </>
     );
+   
 }
 
 export default Layout;

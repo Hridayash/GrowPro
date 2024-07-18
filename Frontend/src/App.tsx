@@ -16,8 +16,14 @@ import ProfileRead from "./components/profile/profileRead";
 import AllJobs from "./components/manager/jobs";
 import JobDetail from "./components/manager/jobDetails";
 import TrainingMaterial from "./components/TrainingMaterial/training";
+
 import AddTrainingMaterial from "./components/TrainingMaterial/addTrainingMaterials";
 import PerformanceReview from "./components/performanceReview/PerformaceReview";
+
+import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
+import About from "./components/Footer/About";
+import Contact from "./components/Footer/Contact";
+import Services from "./components/Footer/Services";
 
 function App() {
   return (
@@ -38,6 +44,10 @@ function App() {
           <Route path = 'job-postings/:id' element = {<JobDetail/>} />
           <Route path = 'create-job' element = {<JobPost/>} />
           <Route path = '/my-team' element = {<Myteam/>} />
+          <Route path = '/PrivacyPolicy' element = {<PrivacyPolicy/>} />
+          <Route path = '/About' element = {<About/>} />
+          <Route path = '/Contact' element = {<Contact/>} />
+          <Route path = '/Services' element = {<Services/>} />
           <Route path = '/training-material' element = {<TrainingMaterial/>} />
           <Route path = '/add-training-material' element = {<AddTrainingMaterial/>} />
           <Route path = '/performance-reviews' element = {<PerformanceReview/>} />
