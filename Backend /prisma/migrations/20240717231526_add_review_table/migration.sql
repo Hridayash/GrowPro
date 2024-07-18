@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE "Review" (
+    "Id" SERIAL NOT NULL,
+    "UserId" INTEGER NOT NULL,
+    "Rating" INTEGER NOT NULL,
+    "Comment" TEXT,
+    "CreatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Review_pkey" PRIMARY KEY ("Id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Review" ADD CONSTRAINT "Review_UserId_fkey" FOREIGN KEY ("UserId") REFERENCES "User"("Id") ON DELETE RESTRICT ON UPDATE CASCADE;

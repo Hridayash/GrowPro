@@ -8,6 +8,9 @@ import LoginRouter from './routes/login.js'
 import LogoutRouter from './routes/logout.js'
 import JobRouter from "./routes/job.js";
 import CourseRouter from './routes/Course.js'
+import profileId from './routes/profileId.js'
+import JobApplication from './routes/jobApplication.js'
+import Reviews from './routes/reviews.js'
 
 dotenv.config();
 
@@ -21,12 +24,18 @@ app.use(cors());
 
 
 //routes
+app.get('/' , (req,res)=>{
+    res.json('hello')
+})
 app.use('/user',UserRouter)
 app.use('/profile' , ProfileRouter)
 app.use('/login' , LoginRouter)
 app.use('/logout' , LogoutRouter)
 app.use('/job' , JobRouter)
 app.use('/course' , CourseRouter)
+app.use('/profileId' , profileId)
+app.use('/JobApplication' , JobApplication)
+app.use('/reviews' , Reviews)
 
 
 
