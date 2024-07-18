@@ -13,84 +13,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  Id Int @id @default(autoincrement())
-  Email String @unique
-  Name String
-  Password String
-  Role String
-  Profile Profile?
-
-
+  Id           Int            @id @default(autoincrement())
+  Email        String         @unique
+  Name         String
+  Password     String
+  Role         String
+  Profile      Profile?
+  JobApplicants JobApplicant[]
+  Reviews   Review[]
 }
 
-model Profile{
-  Id Int @id @default(autoincrement())
-  UserId Int @unique
-  User User @relation(fields: [UserId] , references: [Id], onDelete: Cascade)
-  FullName String
-  Position String
-  Address String
-  ProfileUrl String?
-  CoverUrl String?
-  Education Education?
-  Experience Experience?
+model Profile {
+  Id           Int            @id @default(autoincrement())
+  UserId       Int            @unique
+  User         User           @relation(fields: [UserId], references: [Id], onDelete: Cascade)
+  FullName     String
+  Position     String
+  Address      String
+  ProfileUrl   String?
+  CoverUrl     String?
+  Education    Education?
+  Experience   Experience?
   Certification Certification?
-
+  JobApplicants JobApplicant[]
 }
 
-model Education{
-
-  Id Int @id @default(autoincrement())
+model Education {
+  Id           Int            @id @default(autoincrement())
   InstituteName String
-  Course String
+  Course       String
   GraduationYear Int
-  Grade String
-  Details String
-  ProfileId Int @unique
-  Profile Profile @relation(fields: [ProfileId] , references: [Id], onDelete: Cascade)
-
+  Grade        String
+  Details      String
+  ProfileId    Int            @unique
+  Profile      Profile        @relation(fields: [ProfileId], references: [Id], onDelete: Cascade)
 }
-model Certification{
 
-  Id Int @id @default(autoincrement())
+model Certification {
+  Id           Int            @id @default(autoincrement())
   InstituteName String
-  Course String
-  Details String
-  ProfileId Int @unique
-  Profile Profile @relation(fields: [ProfileId] , references: [Id], onDelete: Cascade)
-
+  Course       String
+  Details      String
+  ProfileId    Int            @unique
+  Profile      Profile        @relation(fields: [ProfileId], references: [Id], onDelete: Cascade)
 }
+
 model Experience {
-  Id Int @id @default(autoincrement())
-  Position String
-  Company String
-  StartDate DateTime
-  EndDate  DateTime?
-  ProfileId Int @unique
-  Profile Profile @relation(fields: [ProfileId] , references: [Id], onDelete: Cascade)
-
-
-
+  Id           Int            @id @default(autoincrement())
+  Position     String
+  Company      String
+  StartDate    DateTime
+  EndDate      DateTime?
+  ProfileId    Int            @unique
+  Profile      Profile        @relation(fields: [ProfileId], references: [Id], onDelete: Cascade)
 }
 
+model Job {
+  Id           Int            @id @default(autoincrement())
+  Title        String
+  DatePosted   DateTime       @default(now())
+  Description  String
+  Applications JobApplicant[]
+}
 
+model JobApplicant {
+  Id           Int            @id @default(autoincrement())
+  JobId        Int
+  ProfileId    Int
+  UserId       Int
+  Job          Job            @relation(fields: [JobId], references: [Id], onDelete: Cascade)
+  Profile      Profile        @relation(fields: [ProfileId], references: [Id], onDelete: Cascade)
+  User         User           @relation(fields: [UserId], references: [Id], onDelete: Cascade)
+  AppliedAt    DateTime       @default(now())
+  Approved     Boolean?
+  Status       String         @default("Processing")
+}
 
- model Job {
-  Id Int @id @default( autoincrement())
-  Title String 
-  DatePosted DateTime   @default(now())
-  Description String
- 
+model Course {
+  Id           Int            @id @default(autoincrement())
+  Title        String
+  Description  String
+  Duration     String
+  FileUrl      String
+  FileType     String
+}
 
-
- }
- model Course {
-  Id Int @id @default(autoincrement())
-  Title String
-  Description String
-  Duration String
-  FileUrl String
-  FileType String
- }
+model Review {
+  id                    Int       @id @default(autoincrement())
+  userId                Int
+  qualityOfWork         Int       // Rating for quality of work (1-5)
+  productivity          Int       // Rating for productivity (1-5)
+  attendanceAndPunctuality Int     // Rating for attendance and punctuality (1-5)
+  communicationSkills   Int       // Rating for communication skills (1-5)
+  teamwork              Int       // Rating for teamwork (1-5)
+  problemSolvingAbilities Int     // Rating for problem-solving abilities (1-5)
+  initiative            Int       // Rating for initiative (1-5)
+  adaptability          Int       // Rating for adaptability (1-5)
+  leadershipPotential   Int       // Rating for leadership potential (1-5)
+  customerSatisfaction  Int       // Rating for customer satisfaction (1-5)
+  comment               String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  User                  User      @relation(fields: [userId], references: [Id])
+}

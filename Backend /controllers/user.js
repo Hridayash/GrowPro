@@ -14,7 +14,7 @@ async function findTheCurrentUser (req, res){
         // Fetch user details based on userId from JWT
         const user = await prisma.user.findUnique({
             where: { Id: req.user.userId },
-            select: { Name: true, Email: true, Role: true }
+            select: { Name: true, Email: true, Role: true, Id: true }
         });
 
         if (!user) {

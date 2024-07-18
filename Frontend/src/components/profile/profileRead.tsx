@@ -1,49 +1,78 @@
 import { useEffect, useState } from "react";
 
 import axios from "axios";
-
-import {  useParams } from "react-router-dom";
+import { FaPen } from "react-icons/fa";
+import { Link, useParams } from "react-router-dom";
 
 
 export default function ProfileRead(){
-
-    const { id: employeeId } = useParams();
-
- 
-   
-
+    const {id} = useParams()
+    const [user, setUser] = useState();
+    const [email, setEmail] = useState();
+    const [isEdit , SetEdit ] =useState(false);
     const [profile, setProfile] = useState({
         FullName:"", 
         Position:"", 
         Address:"", 
-        Education:"", 
-        Experience:"", 
-        Skills:""
+        profile:""
+      
 
 
     })
-   
+    const [name, setName] = useState("")
 
-   
+    // useEffect(()=>{
+        
+    //     const fetchUserDetail = async ()=>{
+    //         const token = localStorage.getItem('accessToken');
+    //         try{
+              
+    //             const response = await axios.get('http://localhost:3002/user' , {
+    //                 headers:{
+    //                     Authorization: `Bearer ${token}`
+    //                 },
+    //             });
+    //             setUser(response.data.Name);
+    //             setEmail(response.data.Email);
+                
+
+    //         }catch(err){
+    //             console.log(err);
+               
+                
+    //         }
+    //     }
+        
+    //     fetchUserDetail()
+        
+    // } , [])
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-           
+            const token = localStorage.getItem("accessToken");
             try {
-                const response = await axios.get(`http://localhost:3002/profile/${employeeId}`)
-                
+                const response = await axios.get(`http://localhost:3002/profile/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
                 console.log('Profile Data:', response.data);
                 setProfile(response.data);
-                
+                setName(response.data.FullName)
+                setEmail(response.data.Email)
+                console.log(response.data)
+
             } catch (err) {
                 console.log(err);
             }
         };
         fetchUserProfile();
-    }, [employeeId]);
+    }, []);
 
 
-
+    function handleEdit(){
+                SetEdit(prevState => !prevState)
+    }
 
     const handleChange = (e) => {
         setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -56,18 +85,19 @@ export default function ProfileRead(){
         
             {/* users basic details  */}
             <div className="w-[90%] mx-[10%] ">
+            {isEdit && <div className="fixed top-0 left-0 h-screen w-screen bg-gray-200 backdrop-filter backdrop-blur-sm z-20"></div>}
                 {/* cover picture */}
                 <div className="bg-gray-400 w-full h-56 flex  justify-end p-6 rounded-t-xl">
-               
+                   {/* <Link to="/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link> */}
                 </div>
                 {/* user details */}
                 <div className="flex items-center justify-between bg-white rounded-b-xl">
                     <div className="flex flex-col relative pt-32 p-10">
-                    <div className="h-56 w-56 bg-slate-400 rounded-full border-white border-8 absolute -top-32 left-10"></div>
-                    <h1 className=" font-medium text-2xl">{profile.FullName}</h1>
+                    <div className="h-56 w-56 rounded-full border-white border-8 absolute -top-32 bg-gray-500 left-10 z-10 overflow-hidden"> <img src={profile.ProfileUrl} className="  "/></div>
+                    <h1 className=" font-medium text-2xl">{name}</h1>
                     <p>{profile.Position}</p>
                     <p>{profile.Address}</p>
-                    
+                    <p>{email}</p>
                     </div>
                     <div className="flex gap-2 items-center p-10">
                         <div className=" bg-red-400 rounded-full w-8 h-8"></div>

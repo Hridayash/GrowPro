@@ -5,10 +5,12 @@ import NewSideBar from "../sidebar/newSidebar";
 import { useState , useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { set } from 'date-fns';
 
 const Layout = () => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
+    const [id , setID] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const Layout = () => {
         });
         setUser(response.data.Name);
         setRole(response.data.Role);
+        setID(response.data.Id)
         console.log(response.data.Role)
       } catch (err) {
         console.log(err);
@@ -42,7 +45,7 @@ const Layout = () => {
         <>
             <Nav name={user}/>
             <div className="flex">
-                <NewSideBar role={role} />
+                <NewSideBar role={role} userId={id} />
                 <main className="p-6 ml-60 mt-12 min-h-full">
                     <Outlet />
                 </main>

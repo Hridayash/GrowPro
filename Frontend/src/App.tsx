@@ -18,6 +18,11 @@ import JobDetail from "./components/manager/jobDetails";
 import TrainingMaterial from "./components/TrainingMaterial/training";
 import AddTrainingMaterial from "./components/TrainingMaterial/addTrainingMaterials";
 import PerformanceReview from "./components/performanceReview/PerformaceReview";
+import EditJobPost from "./components/manager/editJobPost";
+import Applicant from "./components/manager/applicant";
+import UserApplications from "./components/manager/userApplicant";
+import ReviewList from "./components/Reviews/reviews";
+import ManagerPerformanceReview from "./components/Reviews/reviews";
 
 function App() {
   return (
@@ -36,11 +41,15 @@ function App() {
           <Route path="manage-user/edit-user/:id" element = {<EditEmployee />} />
           <Route path = 'job-postings' element = {<AllJobs/>} />
           <Route path = 'job-postings/:id' element = {<JobDetail/>} />
+          <Route path = 'edit-job-postings/:id' element = {<EditJobPost/>} />
           <Route path = 'create-job' element = {<JobPost/>} />
           <Route path = '/my-team' element = {<Myteam/>} />
           <Route path = '/training-material' element = {<TrainingMaterial/>} />
           <Route path = '/add-training-material' element = {<AddTrainingMaterial/>} />
           <Route path = '/performance-reviews' element = {<PerformanceReview/>} />
+          <Route path = '/applicants/:JobId' element = {<Applicant/>} />
+          <Route path = '/applicant/:userId' element = {<UserApplications/>} />
+          <Route path = '/review' element ={<ManagerPerformanceReview />} />
           
         </Route>
       </Routes>
