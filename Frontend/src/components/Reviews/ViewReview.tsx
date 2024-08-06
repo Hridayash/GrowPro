@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getUserId } from '../authcheck/getRole'; // Assuming this function retrieves userId
 
-// Function to render star icons based on rating value
-
-
 const EmployeePerformanceReviews = () => {
   const [reviews, setReviews] = useState([]);
+  const [overall, setOverall ]  = useState();
   const userId = getUserId(); // Assuming this function retrieves userId from somewhere
 
   useEffect(() => {
@@ -18,17 +16,17 @@ const EmployeePerformanceReviews = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        setReviews(response.data);
+        setReviews(response.data.reviews || []); // Ensure you are setting the correct data
+        setOverall(response.data.overallAverageRating)
       } catch (err) {
         console.error('Error fetching reviews:', err);
       }
     };
 
     fetchReviews();
-  }, [userId]);
-   // Fetch reviews whenever userId changes
+  }, [userId]); // Fetch reviews whenever userId changes
 
-   const renderStarRating = (rating) => {
+  const renderStarRating = (rating) => {
     const stars = parseInt(rating, 10);
     if (isNaN(stars) || stars < 1 || stars > 5) return null;
 
@@ -61,36 +59,37 @@ const EmployeePerformanceReviews = () => {
                 <div>{renderStarRating(review.attendanceAndPunctuality)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Communication Skills</div>
+                <div>Communication Skills:</div>
                 <div>{renderStarRating(review.communicationSkills)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Teamwork</div>
+                <div>Teamwork:</div>
                 <div>{renderStarRating(review.teamwork)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Problem Solving Abilities</div>
+                <div>Problem Solving Abilities:</div>
                 <div>{renderStarRating(review.problemSolvingAbilities)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Initiative</div>
+                <div>Initiative:</div>
                 <div>{renderStarRating(review.initiative)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Adaptability</div>
+                <div>Adaptability:</div>
                 <div>{renderStarRating(review.adaptability)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Leadership Potential</div>
+                <div>Leadership Potential:</div>
                 <div>{renderStarRating(review.leadershipPotential)}</div>
               </div>
               <div className="flex justify-between mb-2">
-                <div>Customer Satisfaction</div>
+                <div>Customer Satisfaction:</div>
                 <div>{renderStarRating(review.customerSatisfaction)}</div>
               </div>
-              
-              {/* Add other rating categories as needed */}
-             
+              <div className="flex justify-between mb-2">
+                <div>Overall</div>
+                <div>{renderStarRating(overall)}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -99,7 +98,6 @@ const EmployeePerformanceReviews = () => {
       )}
     </div>
   );
-
 };
 
 export default EmployeePerformanceReviews;

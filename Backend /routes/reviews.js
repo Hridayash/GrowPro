@@ -50,11 +50,39 @@ router.get('/:userId', authenticateToken, async (req, res) => {
         User: true, // Include the user information if needed
       },
     });
-    res.json(reviews);
+
+    // Calculate the average rating for each review
+    const averageRatings = reviews.map(review => {
+      const {
+        qualityOfWork,
+        productivity,
+        attendanceAndPunctuality,
+        communicationSkills,
+        teamwork,
+        problemSolvingAbilities,
+        initiative,
+        adaptability,
+        leadershipPotential,
+        customerSatisfaction
+      } = review;
+
+      const totalRating = qualityOfWork + productivity + attendanceAndPunctuality + communicationSkills + teamwork + problemSolvingAbilities + initiative + adaptability + leadershipPotential + customerSatisfaction;
+      
+      return Math.floor(totalRating / 10); // Since there are 10 rating fields
+    });
+
+    // Calculate the overall average rating
+    const overallAverageRating = averageRatings.length ? averageRatings.reduce((sum, rating) => sum + rating, 0) / averageRatings.length : 0;
+
+    res.json({
+      reviews,
+      overallAverageRating
+    });
   } catch (err) {
     console.error('Error fetching reviews:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 export default router;

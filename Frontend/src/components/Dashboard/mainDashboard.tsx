@@ -3,6 +3,7 @@ import AdminDashboard from "./admin";
 import EmployeeDashboard from "./employee";
 import ManagerDashboard from "./manager";
 import axios from "axios";
+import HrDashboard from "./hrDashboard";
 
 export default function MainDashboard() {
     const [role, setRole] = useState("");
@@ -39,8 +40,8 @@ export default function MainDashboard() {
 
     let activeDashboard;
     switch (role) {
-        case "admin":
-            activeDashboard = <AdminDashboard />;
+        case "hr":
+            activeDashboard = <HrDashboard/>;
             break;
         case "manager":
             activeDashboard = <ManagerDashboard />;

@@ -1,18 +1,15 @@
-
 import { Outlet } from 'react-router-dom';
 import Footer from '../Footer/Footer';
-
-import Nav from "../Navigation/nav";
-import NewSideBar from "../sidebar/newSidebar";
-import { useState , useEffect } from 'react';
+import Nav from '../Navigation/nav';
+import NewSideBar from '../sidebar/newSidebar';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { set } from 'date-fns';
 
 const Layout = () => {
-    const [user, setUser] = useState(null);
-    const [role, setRole] = useState(null);
-    const [id , setID] = useState(null);
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
+  const [id, setID] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,8 +25,8 @@ const Layout = () => {
         });
         setUser(response.data.Name);
         setRole(response.data.Role);
-        setID(response.data.Id)
-        console.log(response.data.Role)
+        setID(response.data.Id);
+        console.log(response.data.Role);
       } catch (err) {
         console.log(err);
         if (err.response && err.response.status === 401) {
@@ -41,27 +38,25 @@ const Layout = () => {
       }
     };
     fetchUserData();
-
   }, [navigate]);
-    return (
-        <>
-            <Nav name={user}/>
-            <Footer />
-            <div className="flex">
-                <NewSideBar role={role} userId={id} />
-                <main className="p-6 ml-60 mt-12 min-h-full">
-                    <Outlet />
-                </main>
+
+  return (
+    <>
+      <Nav name={user} />
+      <div className="flex flex-col min-h-screen">
+        <div className="flex flex-1">
+          <NewSideBar role={role} userId={id} />
+          <main className="flex-1 p-6 ml-60 mt-12 flex justify-center ">
+            <div className="w-full max-w-7xl">
+              <Outlet />
             </div>
-            
-
-            
-
-            
-           
-        </>
-    );
-   
-}
+          </main>
+        </div>
+        {/* <Footer /> */}
+      </div>
+    </>
+  );
+};
 
 export default Layout;
+ 

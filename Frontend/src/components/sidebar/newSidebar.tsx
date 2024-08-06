@@ -9,12 +9,13 @@ import { GiGraduateCap } from "react-icons/gi";
 import { Link } from 'react-router-dom';
 
 const NewSidebar = ({ role , userId }) => {
-  const adminLinks = [
+  const HRLinks = [
     { name: 'Dashboard', path: '/' },
-    { name: 'Manage Users', path: '/manage-user' },
+    { name: 'My Team', path: '/my-team' },
     { name: 'Job Postings', path: '/job-postings' },
-    { name: 'Reports', path: '/reports' },
+    { name: 'Training Material', path: '/training-material' },
   ];
+
 
   const managerLinks = [
     { name: 'Dashboard', path: '/' },
@@ -36,8 +37,8 @@ const NewSidebar = ({ role , userId }) => {
   let links;
 
   switch (role) {
-    case 'admin':
-      links = adminLinks;
+    case 'hr':
+      links = HRLinks;
       break;
     case 'manager':
       links = managerLinks;

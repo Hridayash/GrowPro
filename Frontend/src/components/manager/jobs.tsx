@@ -43,11 +43,11 @@ export default function AllJobs() {
     fetchJobs();
   }, []);
 
-  const handleJobCRUD = role === "manager" ? (
+  const handleJobCRUD = role === "employee" ? null : (
     <Link to="/create-job">
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3">+ Add</button>
     </Link>
-  ) : null;
+  );
 
   return (
     <>
@@ -66,7 +66,7 @@ export default function AllJobs() {
                   <p className="text-red-500">
                     {formatDistanceToNow(new Date(job.DatePosted), { addSuffix: true })}
                   </p>
-                  {role === "manager" ?<Link to={`/applicants/${job.Id}`}><p>{jobApplicants.length} Applicant(s)</p></Link> :<p>{jobApplicants.length} Applicant(s)</p>}
+                  {role === "employee" ? <p>{jobApplicants.length} Applicant(s)</p> :<Link to={`/applicants/${job.Id}`}><p>{jobApplicants.length} Applicant(s)</p></Link> }
                 </div>
               </div>
 

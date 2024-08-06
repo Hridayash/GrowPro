@@ -36,7 +36,7 @@ async function createNewUser(req,res){
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
         
         // Determine role
-        const role = req.body.Role ? req.body.Role : 'manager';
+        const role = req.body.Role ? req.body.Role : 'hr';
 
         // Creating user object
         const user = { Email: req.body.Email, Name: req.body.Name, Password: hashedPassword, Role: role };

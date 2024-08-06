@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPen } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import EmployeePerformanceReviews from "../Reviews/ViewReview";
 
 
 export default function ProfileRead(){
@@ -167,6 +168,7 @@ export default function ProfileRead(){
                 
 
             </div>
+            <EmployeePerformanceReviews />
        
         </>
     );

@@ -7,8 +7,6 @@ export default function Applicant() {
   const [userRole, setUserRole] = useState('');
   const { JobId } = useParams(); 
   
-  // Get the job ID from the URL
-
   const fetchUserRole = async () => {
     try {
       const token = localStorage.getItem('accessToken');
@@ -31,9 +29,27 @@ export default function Applicant() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setApplicants(response.data);
+      const applicantsData = response.data;
+      for (const applicant of applicantsData) {
+        await fetchReviews(applicant);
+      }
+      setApplicants(applicantsData);
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const fetchReviews = async (applicant) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.get(`http://localhost:3002/reviews/${applicant.Profile.User.Id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      applicant.overallAverageRating = response.data.overallAverageRating || 'N/A';
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
     }
   };
 
@@ -47,14 +63,13 @@ export default function Applicant() {
       const token = localStorage.getItem('accessToken');
       await axios.patch(`http://localhost:3002/JobApplication/${applicantId}`, {
         approved: true,
-        status : "Accepted"
+        status: "Accepted"
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       alert('User Accepted');
-      // Update the state to reflect the changes
       fetchApplicants();
     } catch (err) {
       console.log(err);
@@ -66,14 +81,13 @@ export default function Applicant() {
       const token = localStorage.getItem('accessToken');
       await axios.patch(`http://localhost:3002/JobApplication/${applicantId}`, {
         approved: false,
-        status : "Rejected"
+        status: "Rejected"
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       alert('User Rejected');
-      // Update the state to reflect the changes
       fetchApplicants();
     } catch (err) {
       console.log(err);
@@ -93,10 +107,19 @@ export default function Applicant() {
     }
   };
 
+  const renderStarRating = (rating) => {
+    const stars = parseInt(rating, 10);
+    if (isNaN(stars) || stars < 1 || stars > 5) return null;
 
-
-  // Filter applicants based on role and job
-  const jobApplicants = applicants.filter((applicant)=>(applicant.JobId === parseInt( JobId)))
+    return (
+      <div className="flex">
+        {[...Array(stars)].map((_, index) => (
+          <span key={index} className="text-yellow-500 text-2xl">★</span>
+        ))}
+      </div>
+    );
+  };
+  const jobApplicants = applicants.filter(applicant => applicant.JobId === parseInt(JobId));
 
   const jobTitle = jobApplicants.length > 0 ? jobApplicants[0]?.Job?.Title : '';
 
@@ -104,9 +127,7 @@ export default function Applicant() {
     <>
       <div className="flex justify-between mb-4">
         <h1 className="font-bold text-3xl">Applicants for {jobTitle}</h1>
-        <Link to='/add-user'>
-          <button className="bg-blue-500 text-white rounded-xl p-2 px-4">+ Add</button>
-        </Link>
+       
       </div>
       
       <div className="overflow-x-auto">
@@ -115,7 +136,7 @@ export default function Applicant() {
             <tr>
               <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
               <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
-              <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Role</th>
+              <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Performance</th>
               <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Job Position</th>
               <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
               <th className="w-1/4 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Response</th>
@@ -130,13 +151,13 @@ export default function Applicant() {
                   </Link>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{applicant.Profile.User.Email}</td>
-                <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{applicant.Profile.User.Role}</td>
+                <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{renderStarRating(applicant.overallAverageRating)}</td>
                 <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{applicant.Profile.Position}</td>
-                <td className= {` px-6 py-2 whitespace-nowrap cursor-pointer `}>
-                      <button className={getStatusClass(applicant.Status)}>
-                      {applicant.Status}
-                      </button>
-                  </td>
+                <td className={`px-6 py-2 whitespace-nowrap cursor-pointer`}>
+                  <button className={getStatusClass(applicant.Status)}>
+                    {applicant.Status}
+                  </button>
+                </td>
                 <td className="px-6 py-2 whitespace-nowrap cursor-pointer">
                   <button className='bg-green-200 text-green-700 rounded-xl p-1 mx-2' onClick={() => handleAccept(applicant.Id)}>Accept</button>
                   <button className='bg-red-200 text-red-700 rounded-xl p-1' onClick={() => handleReject(applicant.Id)}>Reject</button>

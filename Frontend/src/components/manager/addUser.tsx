@@ -88,6 +88,7 @@ const AddUserForm = () => {
           >
             
             <option value="manager">Manager</option>
+            <option value="hr">HR</option>
             <option value="employee">Employee</option>
           </select>
         </div>

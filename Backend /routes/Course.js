@@ -75,4 +75,19 @@ CourseRouter.get('/', async(req,res)=>{
    
 } )
 
+CourseRouter.get('/:id' , async(req,res) =>{
+  try{
+    const id = req.params.id
+    const response = await prisma.course.findUnique({
+      where  :{Id : id},
+     
+
+    })
+    res.json(response)
+  }
+  catch(err){
+    console.log(err)
+  }
+})
+
 export default CourseRouter
