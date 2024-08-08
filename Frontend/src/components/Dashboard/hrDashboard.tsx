@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FaUsers, FaTasks, FaChartLine, FaBell, FaProjectDiagram, FaStar } from 'react-icons/fa';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -12,6 +13,43 @@ const HrDashboard = () => {
     { name: 'Jun', performance: 92 },
   ];
 
+  useEffect(()=>{
+    const getemployeeList=async()=>{
+      const res= await axios.get('http://localhost:3002/user/employeeList')
+      setUser(res.data)
+      console.log(res.data)
+    }
+    getemployeeList()
+  },[])
+  const [user,setUser]=useState([])
+
+  useEffect(()=>{
+    const getTotalCourse=async()=>{
+      const res= await axios.get('http://localhost:3002/Course/')
+      setcourse(res.data)
+      console.log(res.data)
+    }
+    getTotalCourse()
+  },[])
+  const [Course,setcourse]=useState([])
+
+  
+    
+  
+    useEffect(() => {
+      const getAllJob = async () => {
+        const token= localStorage.getItem('accessToken')
+        const res = await axios.get('http://localhost:3002/job/all-jobs',{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+        })
+        setJobCount(res.data); // Ensure your backend sends data in { count: ... } format
+        console.log(res.data);
+      }
+      getAllJob()
+    }, [])
+    const [jobCount, setJobCount] = useState([]);
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">HR Dashboard</h1>
@@ -22,8 +60,8 @@ const HrDashboard = () => {
           <FaUsers className="text-3xl text-blue-500 mr-4" />
           <div>
             <h2 className="text-xl font-semibold mb-2">Team Overview</h2>
-            <p>Number of team members: <span className="font-bold">10</span></p>
-            <p>Projects in progress: <span className="font-bold">5</span></p>
+            <p>Number of team members: <span className="font-bold">{user.length}</span></p>
+            
           </div>
         </div>
 
@@ -51,14 +89,13 @@ const HrDashboard = () => {
           </div>
         </div>
 
-        {/* Notifications */}
+        {/* Projects */}
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
           <FaBell className="text-3xl text-yellow-500 mr-4" />
           <div>
-            <h2 className="text-xl font-semibold mb-2">Notifications</h2>
+            <h2 className="text-xl font-semibold mb-2">Projects</h2>
             <ul className="list-disc ml-4">
-              <li>Meeting at 3 PM</li>
-              <li>Project deadline tomorrow</li>
+            <p>Projects in progress: <span className="font-bold">{Course.length}</span></p>
             </ul>
           </div>
         </div>
@@ -67,8 +104,8 @@ const HrDashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
           <FaProjectDiagram className="text-3xl text-purple-500 mr-4" />
           <div>
-            <h2 className="text-xl font-semibold mb-2">Project Status</h2>
-            <p>Current projects: <span className="font-bold">3</span></p>
+            <h2 className="text-xl font-semibold mb-2">Job Posting</h2>
+            <p>Number of Jobs <span className="font-bold">{jobCount.length}</span></p>
             <p>Completed projects: <span className="font-bold">7</span></p>
           </div>
         </div>
@@ -87,5 +124,6 @@ const HrDashboard = () => {
     </div>
   );
 };
+
 
 export default HrDashboard;
