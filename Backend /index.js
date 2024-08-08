@@ -11,6 +11,10 @@ import CourseRouter from './routes/Course.js'
 import profileId from './routes/profileId.js'
 import JobApplication from './routes/jobApplication.js'
 import Reviews from './routes/reviews.js'
+import GoalRouter from "./routes/goal.js";
+import questionRoutes from './routes/question.js';
+import feedbackRoutes from './routes/feedback.js'
+import responseRoutes from './routes/response.js'
 
 dotenv.config();
 
@@ -36,6 +40,10 @@ app.use('/course' , CourseRouter)
 app.use('/profileId' , profileId)
 app.use('/JobApplication' , JobApplication)
 app.use('/reviews' , Reviews)
+app.use('/goal' , GoalRouter)
+app.use('/feedbacks', feedbackRoutes);
+app.use('/questions', questionRoutes);
+app.use('/responses', responseRoutes);
 
 
 

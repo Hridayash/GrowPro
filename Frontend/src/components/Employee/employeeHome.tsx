@@ -9,8 +9,11 @@ import SideBarEmployee from "../sidebar/sidebarEmployee";
 
 
 
+
 export default function HomeEmployee(){
 
+
+    
     const [user, setUser] = useState(null);
     const navigate = useNavigate()
  
@@ -41,6 +44,8 @@ export default function HomeEmployee(){
          }
          fetchUserDetail()
      } , [])
+
+  
 
     return(
         <>

@@ -4,9 +4,10 @@ import { FaUserFriends } from 'react-icons/fa';
 import { IoBriefcaseSharp } from 'react-icons/io5';
 import { RiBook2Fill } from 'react-icons/ri';
 import { AiOutlineTrophy } from 'react-icons/ai';
-
+import { TbTargetArrow } from "react-icons/tb";
 import { GiGraduateCap } from "react-icons/gi";
 import { Link } from 'react-router-dom';
+import { VscFeedback } from "react-icons/vsc";
 
 const NewSidebar = ({ role , userId }) => {
   const HRLinks = [
@@ -14,6 +15,8 @@ const NewSidebar = ({ role , userId }) => {
     { name: 'My Team', path: '/my-team' },
     { name: 'Job Postings', path: '/job-postings' },
     { name: 'Training Material', path: '/training-material' },
+    { name: 'Goals', path: '/setGoal' },
+    { name: 'Feedback', path: '/setFeedback' },
   ];
 
 
@@ -23,6 +26,8 @@ const NewSidebar = ({ role , userId }) => {
     { name: 'Job Postings', path: '/job-postings' },
     { name: 'Performance Reviews', path: '/review' },
     { name: 'Training Material', path: '/training-material' },
+    { name: 'Goals', path: '/setGoal' },
+    { name: 'Feedback', path: '/setFeedback' },
   ];
 
   const employeeLinks = [
@@ -32,6 +37,8 @@ const NewSidebar = ({ role , userId }) => {
     { name: 'Training Material', path: '/training-material' },
     // Note: The Track Application path is a placeholder and should be dynamically replaced
     { name: 'Track Application', path: `/applicant/${userId}` },
+    { name: 'Goals', path: '/getGoal' },
+    { name: 'Feedback', path: '/giveFeedback' },
   ];
 
   let links;
@@ -64,6 +71,8 @@ const NewSidebar = ({ role , userId }) => {
               {link.name === 'Performance Reviews' && <AiOutlineTrophy className="text-2xl" />}
               {link.name === 'Training Material' && <GiGraduateCap className="text-2xl" />}
               {link.name === 'Track Application' && <FaUserFriends className="text-2xl" />}
+              {link.name === 'Goals' && <TbTargetArrow className="text-2xl" />}
+              {link.name === 'Feedback' && <VscFeedback className="text-2xl" />}
               <span>{link.name}</span>
             </Link>
           </li>

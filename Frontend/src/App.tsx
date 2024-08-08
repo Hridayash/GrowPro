@@ -29,6 +29,10 @@ import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import About from "./components/Footer/About";
 import Contact from "./components/Footer/Contact";
 import Services from "./components/Footer/Services";
+import SetGoal from "./components/goal/setGoal";
+import EmployeeGoals from "./components/goal/getGoals";
+import AnswerFeedback from "./components/feedback/answerFeedback";
+import CreateFeedback from "./components/feedback/CreateFeedback";
 
 function App() {
   return (
@@ -60,6 +64,10 @@ function App() {
           <Route path = '/applicants/:JobId' element = {<Applicant/>} />
           <Route path = '/applicant/:userId' element = {<UserApplications/>} />
           <Route path = '/review' element ={<ManagerPerformanceReview />} />
+          <Route path = '/setGoal' element ={<SetGoal />} />
+          <Route path = '/getGoal' element ={<EmployeeGoals />} />
+          <Route path = '/giveFeedback' element ={<AnswerFeedback />} />
+          <Route path = '/setFeedback' element ={<CreateFeedback />} />
           
         </Route>
       </Routes>

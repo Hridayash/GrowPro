@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,14 +8,18 @@ datasource db {
 }
 
 model User {
-  Id           Int            @id @default(autoincrement())
-  Email        String         @unique
+  Id           Int           @id @default(autoincrement())
+  Email        String        @unique
   Name         String
   Password     String
   Role         String
   Profile      Profile?
   JobApplicants JobApplicant[]
-  Reviews   Review[]
+  Reviews      Review[]
+  GoalsSet     Goal[]        @relation("ManagerGoals")
+  Goals        Goal[]        @relation("GoalEmployee")
+   Feedbacks   Feedback[]   @relation("UserFeedback")
+  Responses   Response[]
 }
 
 model Profile {
@@ -116,4 +114,43 @@ model Review {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   User                  User      @relation(fields: [userId], references: [Id] , onDelete: Cascade)
+}
+
+model Goal {
+  Id          Int      @id @default(autoincrement())
+  Title       String
+  Description String
+  Completed   Boolean @default(false)
+  CreatedAt   DateTime @default(now())
+  EmployeeId  Int
+  ManagerId   Int
+  Employee    User     @relation("GoalEmployee", fields: [EmployeeId], references: [Id], onDelete: Cascade)
+  Manager     User     @relation("ManagerGoals", fields: [ManagerId], references: [Id], onDelete: Cascade)
+}
+
+
+model Feedback {
+  Id          Int          @id @default(autoincrement())
+  Title       String
+  CreatedAt   DateTime     @default(now())
+  UserId      Int
+  User        User         @relation("UserFeedback", fields: [UserId], references: [Id], onDelete: Cascade)
+  Questions   Question[]
+}
+
+model Question {
+  Id          Int          @id @default(autoincrement())
+  Text        String
+  FeedbackId  Int
+  Feedback    Feedback     @relation(fields: [FeedbackId], references: [Id], onDelete: Cascade)
+  Responses   Response[]
+}
+
+model Response {
+  Id          Int          @id @default(autoincrement())
+  Answer      String
+  QuestionId  Int
+  Question    Question     @relation(fields: [QuestionId], references: [Id], onDelete: Cascade)
+  UserId      Int
+  User        User         @relation(fields: [UserId], references: [Id], onDelete: Cascade)
 }

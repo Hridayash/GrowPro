@@ -88,7 +88,7 @@ export default function ProfileRead(){
             <div className="w-[90%] mx-[10%] ">
             {isEdit && <div className="fixed top-0 left-0 h-screen w-screen bg-gray-200 backdrop-filter backdrop-blur-sm z-20"></div>}
                 {/* cover picture */}
-                <div className="bg-gray-400 w-full h-56 flex  justify-end p-6 rounded-t-xl">
+                <div className="bg-blue-400 w-full h-56 flex  justify-end p-6 rounded-t-xl">
                    {/* <Link to="/editProfile"><button className="rounded-full w-12 h-12 bg-white flex justify-center items-center" onClick={handleEdit}><FaPen/></button> </Link> */}
                 </div>
                 {/* user details */}
