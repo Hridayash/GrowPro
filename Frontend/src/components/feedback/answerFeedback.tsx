@@ -10,9 +10,28 @@ const AnswerFeedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/feedbacks/${id}`);
-        setFeedback(response.data);
-        setResponses(response.data.Questions.map((question) => ({ questionId: question.Id, answer: '' })));
+        const response = await axios.get(`http://localhost:3002/feedbacks`);
+        const allFeedback = response.data;
+
+        // Find the specific feedback by ID
+        const selectedFeedback = allFeedback;
+        console.log(selectedFeedback);
+
+        if (selectedFeedback) {
+          setFeedback(selectedFeedback);
+
+          // Initialize responses based on Questions array
+          // if (Array.isArray(selectedFeedback.Questions)) {
+          //   setResponses(
+          //     selectedFeedback.Questions.map((question) => ({
+          //       questionId: question.Id,
+          //       answer: '',
+          //     }))
+          //   );
+          // }
+        } else {
+          console.error('Feedback not found');
+        }
       } catch (error) {
         console.error('Error fetching feedback:', error);
       }
@@ -30,7 +49,9 @@ const AnswerFeedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:3002/feedbacks/${id}/responses`, { responses });
+      await axios.post(`http://localhost:3002/feedbacks/${id}/responses`, {
+        responses,
+      });
       console.log('Responses submitted');
     } catch (error) {
       console.error('Error submitting responses:', error);
@@ -43,14 +64,22 @@ const AnswerFeedback = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">{feedback.Title}</h1>
-      <form onSubmit={handleSubmit}>
-        {feedback.Questions.map((question, index) => (
+
+
+      {feedback.map((feed)=>(
+        <li key={feed.id}>
+          {feed.Title}
+
+        </li>
+      ))}
+      
+      {/* <form onSubmit={handleSubmit}>
+        {feedback.Questions && feedback.Questions.map((question, index) => (
           <div key={question.Id} className="mb-4">
             <label className="block text-gray-700">{question.Text}</label>
             <input
               type="text"
-              value={responses[index].answer}
+              value={responses[index]?.answer || ''}
               onChange={(e) => handleResponseChange(index, e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               required
@@ -63,7 +92,7 @@ const AnswerFeedback = () => {
         >
           Submit Answers
         </button>
-      </form>
+      </form> */}
     </div>
   );
 };

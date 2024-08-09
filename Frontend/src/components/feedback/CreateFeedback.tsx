@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getUserId } from '../authcheck/getRole';
 
 const CreateFeedback = () => {
-  const id = getUserId();
+  const userId = getUserId();
   const [title, setTitle] = useState('');
   const [questions, setQuestions] = useState([{ text: '' }]);
 
@@ -23,7 +23,7 @@ const CreateFeedback = () => {
       const response = await axios.post('http://localhost:3002/feedbacks/', {
         title,
         questions: questions.map((q) => ({ text: q.text })),
-        id
+        userId
       });
       console.log('Feedback created:', response.data);
     } catch (error) {
