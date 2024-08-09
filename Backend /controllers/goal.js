@@ -87,3 +87,23 @@ export async function markGoal(req, res) {
       res.status(500).json({ error: 'Failed to mark goal as completed' });
     }
   }
+
+  export async function getCompletedGoals(req, res) {
+    try {
+      const goals = await prisma.goal.findMany({
+        where :{Completed : true},
+        select: {
+          Id: true,
+          Title: true,
+          Description: true,
+          Completed: true,
+          Employee: { select: { Name: true } },
+          Manager: { select: { Name: true } },
+        },
+      });
+      res.json(goals);
+    } catch (error) {
+      console.error('Error fetching goals:', error);
+      res.status(500).json({ error: 'Failed to fetch goals' });
+    }
+  }
