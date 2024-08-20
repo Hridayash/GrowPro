@@ -10,7 +10,7 @@ export default function Applicant() {
   const fetchUserRole = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:3002/userRole`, {
+      const response = await axios.get(`https://growpro.onrender.com/userRole`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -24,7 +24,7 @@ export default function Applicant() {
   const fetchApplicants = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:3002/JobApplication`, {
+      const response = await axios.get(`https://growpro.onrender.com/JobApplication`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -42,7 +42,7 @@ export default function Applicant() {
   const fetchReviews = async (applicant) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:3002/reviews/${applicant.Profile.User.Id}`, {
+      const response = await axios.get(`https://growpro.onrender.com/reviews/${applicant.Profile.User.Id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -61,7 +61,7 @@ export default function Applicant() {
   const handleAccept = async (applicantId) => {
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.patch(`http://localhost:3002/JobApplication/${applicantId}`, {
+      await axios.patch(`https://growpro.onrender.com/JobApplication/${applicantId}`, {
         approved: true,
         status: "Accepted"
       }, {
@@ -79,7 +79,7 @@ export default function Applicant() {
   const handleReject = async (applicantId) => {
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.patch(`http://localhost:3002/JobApplication/${applicantId}`, {
+      await axios.patch(`https://growpro.onrender.com/JobApplication/${applicantId}`, {
         approved: false,
         status: "Rejected"
       }, {

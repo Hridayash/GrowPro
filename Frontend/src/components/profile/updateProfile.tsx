@@ -18,7 +18,7 @@ export default function UpdateProfile() {
         const fetchProfile = async () => {
             const token = localStorage.getItem('accessToken');
             try {
-                const response = await axios.get('http://localhost:3002/profile', {
+                const response = await axios.get('https://growpro.onrender.com/profile', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setProfile(response.data);
@@ -54,7 +54,7 @@ export default function UpdateProfile() {
             formData.append('profilePicture', profilePicture);
         }
 
-        axios.post('http://localhost:3002/profile', formData, {
+        axios.post('https://growpro.onrender.com/profile', formData, {
             headers: { 
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'

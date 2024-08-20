@@ -11,7 +11,7 @@ const EmployeePerformanceReviews = () => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`http://localhost:3002/reviews/${userId}`, {
+        const response = await axios.get(`https://growpro.onrender.com/reviews/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

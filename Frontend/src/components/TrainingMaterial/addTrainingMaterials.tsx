@@ -39,7 +39,7 @@ const AddTrainingMaterial = () => {
 
     try {
       // Fetch POST endpoint on your backend
-      const response = await fetch('http://localhost:3002/course/upload-Course', {
+      const response = await fetch('https://growpro.onrender.com/course/upload-Course', {
         method: 'POST',
         body: formData,
       });

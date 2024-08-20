@@ -14,7 +14,7 @@ export default function NavEmployee({name}){
            
 
             const token = localStorage.getItem('accessToken');
-            axios.post('http://localhost:3002/logout' , {} , {
+            axios.post('https://growpro.onrender.com/logout' , {} , {
                 headers : {Authorization: `Bearer ${token}` }
             })
             .then(()=>{

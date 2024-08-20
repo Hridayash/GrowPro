@@ -29,7 +29,7 @@ export default function EditEmployee() {
     if (id) {
       const getUser = async () => {
         try {
-          const response = await axios.get<Employee>(`http://localhost:3002/user/get-user/${id}`);
+          const response = await axios.get<Employee>(`https://growpro.onrender.com/user/get-user/${id}`);
           setUser(response.data);
         } catch (err) {
           console.error(err);
@@ -48,7 +48,7 @@ export default function EditEmployee() {
     e.preventDefault();
     if (id) {
       try {
-        await axios.put(`http://localhost:3002/user/edit-user/${id}`, user);
+        await axios.put(`https://growpro.onrender.com/user/edit-user/${id}`, user);
         navigate('/my-team');
       } catch (err) {
         console.error(err);
@@ -58,7 +58,7 @@ export default function EditEmployee() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3002/user/delete-user/${id}`);
+      await axios.delete(`https://growpro.onrender.com/user/delete-user/${id}`);
       // setEmployees(prevEmployees => prevEmployees.filter(employee => employee.Id !== id));
     } catch (error) {
       console.error('Error deleting employee:', error);

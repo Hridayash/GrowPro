@@ -24,7 +24,7 @@ const ManagerPerformanceReview = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('http://localhost:3002/user/employeeList');
+      const response = await axios.get('https://growpro.onrender.com/user/employeeList');
       setEmployees(response.data);
     } catch (err) {
       console.error('Error fetching employees:', err);
@@ -67,7 +67,7 @@ const ManagerPerformanceReview = () => {
         customerSatisfaction: parseInt(ratings.customerSatisfaction, 10),
       };
 
-      const response = await axios.post('http://localhost:3002/reviews/', {
+      const response = await axios.post('https://growpro.onrender.com/reviews/', {
         userId: selectedEmployee.Id,
         ratings: formattedRatings,
         comment,

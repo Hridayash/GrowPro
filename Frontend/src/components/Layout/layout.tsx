@@ -18,7 +18,7 @@ const Layout = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get('http://localhost:3002/user', {
+        const response = await axios.get('https://growpro.onrender.com/user', {
           headers: {
             Authorization: `Bearer ${token}`
           }

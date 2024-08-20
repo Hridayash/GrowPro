@@ -7,7 +7,7 @@ export default function GoalList() {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/goal/employee-goals', {
+        const response = await axios.get('https://growpro.onrender.com/goal/employee-goals', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
           },

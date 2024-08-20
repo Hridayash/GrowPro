@@ -14,7 +14,7 @@ export default function Nav({name}){
         const fetchUserProfile = async () => {
             const token = localStorage.getItem("accessToken");
             try {
-                const response = await axios.get('http://localhost:3002/profile', {
+                const response = await axios.get('https://growpro.onrender.com/profile', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -39,7 +39,7 @@ export default function Nav({name}){
             return;
         }
     
-        axios.post('http://localhost:3002/logout', {}, {
+        axios.post('https://growpro.onrender.com/logout', {}, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(() => {

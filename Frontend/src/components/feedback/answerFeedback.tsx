@@ -10,7 +10,7 @@ const AnswerFeedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/feedbacks`);
+        const response = await axios.get(`https://growpro.onrender.com/feedbacks`);
         const allFeedback = response.data;
 
         // Find the specific feedback by ID
@@ -49,7 +49,7 @@ const AnswerFeedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:3002/feedbacks/${id}/responses`, {
+      await axios.post(`https://growpro.onrender.com/feedbacks/${id}/responses`, {
         responses,
       });
       console.log('Responses submitted');

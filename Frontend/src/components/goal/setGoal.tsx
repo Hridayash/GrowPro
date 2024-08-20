@@ -13,7 +13,7 @@ export default function SetGoal() {
 
   const fetchGoals = async () => {
     try {
-      const response = await axios.get('http://localhost:3002/goal/employee-goals', {
+      const response = await axios.get('https://growpro.onrender.com/goal/employee-goals', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
         },
@@ -26,7 +26,7 @@ export default function SetGoal() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('http://localhost:3002/user/employeeList', {
+      const response = await axios.get('https://growpro.onrender.com/user/employeeList', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
         },
@@ -46,7 +46,7 @@ export default function SetGoal() {
     e.preventDefault();
     try {
       await axios.post(
-        'http://localhost:3002/goal/set-goal',
+        'https://growpro.onrender.com/goal/set-goal',
         { Title: title, Description: description, EmployeeId: employeeId, ManagerId: ManagerId },
         {
           headers: {

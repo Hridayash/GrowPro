@@ -23,7 +23,7 @@ const AddUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3002/user/createUser', formData);
+      const response = await axios.post('https://growpro.onrender.com/user/createUser', formData);
       console.log(response.data);
       alert('User added successfully!');
       // Reset form

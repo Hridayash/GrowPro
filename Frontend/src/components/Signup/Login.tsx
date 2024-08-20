@@ -23,7 +23,7 @@ export default function Login(){
 
     function Submit(e:any){
         e.preventDefault();
-        axios.post('http://localhost:3002/login' ,   user )
+        axios.post('https://growpro.onrender.com/login' ,   user )
         .then(result =>{
             const {accessToken} =result.data
             console.log(accessToken)

@@ -19,7 +19,7 @@ const EmployeeDashboard = () => {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/goal/employee-goals/${employeeId}`, {
+        const response = await axios.get(`https://growpro.onrender.com/goal/employee-goals/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           }
@@ -44,7 +44,7 @@ const EmployeeDashboard = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/reviews/${employeeId}`, {
+        const response = await axios.get(`https://growpro.onrender.com/reviews/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           }
@@ -64,21 +64,21 @@ const EmployeeDashboard = () => {
       try {
         const token = localStorage.getItem('accessToken');
         
-        const totalJobsResponse = await axios.get(`http://localhost:3002/job/total-jobs`, {
+        const totalJobsResponse = await axios.get(`https://growpro.onrender.com/job/total-jobs`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
         });
         setTotalJobsPosted(totalJobsResponse.data.total);
 
-        const approvedJobsResponse = await axios.get(`http://localhost:3002/job/approved-jobs`, {
+        const approvedJobsResponse = await axios.get(`https://growpro.onrender.com/job/approved-jobs`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
         });
         setApprovedJobs(approvedJobsResponse.data.approved);
 
-        const appliedJobsResponse = await axios.get(`http://localhost:3002/job/applied-jobs`, {
+        const appliedJobsResponse = await axios.get(`https://growpro.onrender.com/job/applied-jobs`, {
           headers: {
             Authorization: `Bearer ${token}`,
           }

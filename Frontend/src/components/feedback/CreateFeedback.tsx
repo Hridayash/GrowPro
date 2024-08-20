@@ -20,7 +20,7 @@ const CreateFeedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3002/feedbacks/', {
+      const response = await axios.post('https://growpro.onrender.com/feedbacks/', {
         title,
         questions: questions.map((q) => ({ text: q.text })),
         userId

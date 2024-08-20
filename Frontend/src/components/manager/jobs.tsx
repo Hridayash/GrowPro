@@ -12,7 +12,7 @@ export default function AllJobs() {
   const fetchJobs = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:3002/job/all-jobs', {
+      const response = await axios.get('https://growpro.onrender.com/job/all-jobs', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -26,7 +26,7 @@ export default function AllJobs() {
   const fetchApplicants = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:3002/JobApplication', {
+      const response = await axios.get('https://growpro.onrender.com/JobApplication', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -16,7 +16,7 @@ const ManagerDashboard = () => {
   useEffect(() => {
     const getEmployeeList = async () => {
       try {
-        const res = await axios.get('http://localhost:3002/user/employeeList');
+        const res = await axios.get('https://growpro.onrender.com/user/employeeList');
         setUser(res.data);
         console.log(res.data);
       } catch (error) {
@@ -29,7 +29,7 @@ const ManagerDashboard = () => {
   useEffect(() => {
     const getTotalCourse = async () => {
       try {
-        const res = await axios.get('http://localhost:3002/Course/');
+        const res = await axios.get('https://growpro.onrender.com/Course/');
         setCourse(res.data);
         console.log(res.data);
       } catch (error) {
@@ -43,7 +43,7 @@ const ManagerDashboard = () => {
     const getAllEmployeesGoals = async () => {
       const token = localStorage.getItem('accessToken');
       try {
-        const res = await axios.get('http://localhost:3002/goal/employee-goals/', {
+        const res = await axios.get('https://growpro.onrender.com/goal/employee-goals/', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -61,7 +61,7 @@ const ManagerDashboard = () => {
     const getCompletedGoals = async () => {
       const token = localStorage.getItem('accessToken');
       try {
-        const res = await axios.get('http://localhost:3002/goal/completedgoals', {
+        const res = await axios.get('https://growpro.onrender.com/goal/completedgoals', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -79,7 +79,7 @@ const ManagerDashboard = () => {
     const getAllJob = async () => {
       const token = localStorage.getItem('accessToken');
       try {
-        const res = await axios.get('http://localhost:3002/job/all-jobs', {
+        const res = await axios.get('https://growpro.onrender.com/job/all-jobs', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -97,7 +97,7 @@ const ManagerDashboard = () => {
     const fetchTopPerformers = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get('http://localhost:3002/reviews', {
+        const response = await axios.get('https://growpro.onrender.com/reviews', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -107,7 +107,7 @@ const ManagerDashboard = () => {
         // Fetch reviews for each performer and update the state
         const updatedPerformers = await Promise.all(performers.map(async (performer) => {
           try {
-            const reviewResponse = await axios.get(`http://localhost:3002/reviews/${performer.userId}`, {
+            const reviewResponse = await axios.get(`https://growpro.onrender.com/reviews/${performer.userId}`, {
               headers: {
                 Authorization: `Bearer ${token}`
               }

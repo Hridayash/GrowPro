@@ -16,7 +16,7 @@ const  handleSubmit = async (e) =>{
         e.preventDefault();
         try{
             const token = localStorage.getItem('accessToken')
-            const response = await axios.post('http://localhost:3002/job' , {Title, Description} , {
+            const response = await axios.post('https://growpro.onrender.com/job' , {Title, Description} , {
                 headers :{
                     Authorization: `Bearer ${token}`
                 }

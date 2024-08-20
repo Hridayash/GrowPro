@@ -28,7 +28,7 @@ export default function ProfileRead(){
     //         const token = localStorage.getItem('accessToken');
     //         try{
               
-    //             const response = await axios.get('http://localhost:3002/user' , {
+    //             const response = await axios.get('https://growpro.onrender.com/user' , {
     //                 headers:{
     //                     Authorization: `Bearer ${token}`
     //                 },
@@ -52,7 +52,7 @@ export default function ProfileRead(){
         const fetchUserProfile = async () => {
             const token = localStorage.getItem("accessToken");
             try {
-                const response = await axios.get(`http://localhost:3002/profile/${id}`, {
+                const response = await axios.get(`https://growpro.onrender.com/profile/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },

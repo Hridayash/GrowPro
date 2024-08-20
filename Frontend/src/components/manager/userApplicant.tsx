@@ -10,7 +10,7 @@ const UserApplications = () => {
   const fetchUserApplications = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:3002/JobApplication/user/${userId}`, {
+      const response = await axios.get(`https://growpro.onrender.com/JobApplication/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -26,7 +26,7 @@ export default function JobDetail() {
   const fetchJobDetail = async () => {
     const token = localStorage.getItem('accessToken');
     try {
-      const jobResponse = await axios.get(`http://localhost:3002/job/all-jobs/${id}`, {
+      const jobResponse = await axios.get(`https://growpro.onrender.com/job/all-jobs/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -40,7 +40,7 @@ export default function JobDetail() {
   const fetchProfileId = async (userId) => {
     const token = localStorage.getItem('accessToken');
     try {
-      const profileResponse = await axios.get(`http://localhost:3002/profileId/${userId}`, {
+      const profileResponse = await axios.get(`https://growpro.onrender.com/profileId/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ export default function JobDetail() {
     const token = localStorage.getItem('accessToken');
     try {
       const response = await axios.post(
-        'http://localhost:3002/JobApplication/',
+        'https://growpro.onrender.com/JobApplication/',
         {
           JobId: job.Id,
           ProfileId: profileId,

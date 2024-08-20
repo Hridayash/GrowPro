@@ -15,7 +15,7 @@ const EmployeeDashboard = () => {
     // Fetch all goals for the employee
     const fetchGoals = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/goal/employee-goals/${employeeId}`, {
+        const response = await axios.get(`https://growpro.onrender.com/goal/employee-goals/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
           }
@@ -41,7 +41,7 @@ const EmployeeDashboard = () => {
     // Fetch reviews and average rating for the employee
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/review/${employeeId}`, {
+        const response = await axios.get(`https://growpro.onrender.com/review/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           }

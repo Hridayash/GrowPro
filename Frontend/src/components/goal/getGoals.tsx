@@ -9,7 +9,7 @@ export default function EmployeeGoals() {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const response = await axios.get(   `http://localhost:3002/goal/employee-goals/${id}`, {
+        const response = await axios.get(   `https://growpro.onrender.com/goal/employee-goals/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
           }
@@ -25,7 +25,7 @@ export default function EmployeeGoals() {
 
   const markAsCompleted = async (goalId) => {
     try {
-      await axios.put(`http://localhost:3002/goal/mark-goal/${goalId}`, {}, {
+      await axios.put(`https://growpro.onrender.com/goal/mark-goal/${goalId}`, {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
         }

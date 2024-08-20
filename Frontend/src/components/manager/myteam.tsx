@@ -10,7 +10,7 @@ export default function Myteam() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/user/employeeList');
+        const response = await axios.get('https://growpro.onrender.com/user/employeeList');
         setEmployees(response.data);
       } catch (error) {
         console.error('Error fetching employees:', error);

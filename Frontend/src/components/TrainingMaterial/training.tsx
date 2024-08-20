@@ -25,7 +25,7 @@ const TrainingMaterial = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/course');
+        const response = await axios.get('https://growpro.onrender.com/course');
         setCourse(response.data);
         console.log(response.data)
       } catch (err) {
