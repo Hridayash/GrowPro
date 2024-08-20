@@ -48,4 +48,40 @@ async function getOneJob (req,res){
 
 
 
-export {createJob , getAllJob , getOneJob}
+// controllers/job.js
+
+async function getTotalJobs(req, res) {
+    try {
+        const totalJobs = await prisma.job.count();
+        res.json({ total: totalJobs });
+    } catch (error) {
+        console.error('Error getting total jobs:', error);
+        res.status(500).json({ error: 'Failed to fetch total jobs' });
+    }
+}
+
+async function getApprovedJobs(req, res) {
+    try {
+        const approvedJobs = await prisma.job.count({
+            where: { approved: true }
+        });
+        res.json({ approved: approvedJobs });
+    } catch (error) {
+        console.error('Error getting approved jobs:', error);
+        res.status(500).json({ error: 'Failed to fetch approved jobs' });
+    }
+}
+
+async function getAppliedJobs(req, res) {
+    try {
+        const appliedJobs = await prisma.application.count({
+            where: { jobId: { in: (await prisma.job.findMany({ select: { Id: true } })).map(job => job.Id) } }
+        });
+        res.json({ applied: appliedJobs });
+    } catch (error) {
+        console.error('Error getting applied jobs:', error);
+        res.status(500).json({ error: 'Failed to fetch applied jobs' });
+    }
+}
+
+export { createJob, getAllJob, getOneJob, getTotalJobs, getApprovedJobs, getAppliedJobs };
