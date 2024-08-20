@@ -1,116 +1,64 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaUsers, FaTasks, FaChartLine, FaBell, FaProjectDiagram, FaStar, FaTrophy } from 'react-icons/fa';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { FaUsers, FaTasks,  FaBell, FaProjectDiagram, FaStar, FaTrophy } from 'react-icons/fa';
 
-const ManagerDashboard = () => {
-  const [jobCount, setJobCount] = useState([]);
-  const [topPerformers, setTopPerformers] = useState([]);
-  const [user, setUser] = useState([]);
-  const [goal, setGetAllEmployeeGoals] = useState([]);
-  const [course, setCourse] = useState([]);
-  const [goals, setEmployeeCounts] = useState([]);
 
- 
+interface Performer {
+  userId: string;
+  User?: {
+    Name?: string;
+  };
+  overallAverageRating?: string;
+}
 
-  useEffect(() => {
-    const getEmployeeList = async () => {
-      try {
-        const res = await axios.get('https://growpro.onrender.com/user/employeeList');
-        setUser(res.data);
-        console.log(res.data);
-      } catch (error) {
-        console.error('Failed to fetch employee list:', error);
-      }
-    };
-    getEmployeeList();
-  }, []);
+const ManagerDashboard: React.FC = () => {
+  const [jobCount, setJobCount] = useState<number>(0);
+  const [topPerformers, setTopPerformers] = useState<Performer[]>([]);
+  const [user, setUser] = useState<any[]>([]);
+  const [goal, setGetAllEmployeeGoals] = useState<any[]>([]);
+  const [course, setCourse] = useState<any[]>([]);
+  const [goals, setEmployeeCounts] = useState<any[]>([]);
 
   useEffect(() => {
-    const getTotalCourse = async () => {
-      try {
-        const res = await axios.get('https://growpro.onrender.com/Course/');
-        setCourse(res.data);
-        console.log(res.data);
-      } catch (error) {
-        console.error('Failed to fetch courses:', error);
-      }
-    };
-    getTotalCourse();
-  }, []);
-
-  useEffect(() => {
-    const getAllEmployeesGoals = async () => {
-      const token = localStorage.getItem('accessToken');
-      try {
-        const res = await axios.get('https://growpro.onrender.com/goal/employee-goals/', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setGetAllEmployeeGoals(res.data);
-        console.log(res.data);
-      } catch (error) {
-        console.error('Failed to fetch employee goals:', error);
-      }
-    };
-    getAllEmployeesGoals();
-  }, []);
-
-  useEffect(() => {
-    const getCompletedGoals = async () => {
-      const token = localStorage.getItem('accessToken');
-      try {
-        const res = await axios.get('https://growpro.onrender.com/goal/completedgoals', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setEmployeeCounts(res.data);
-        console.log(res.data);
-      } catch (error) {
-        console.error('Failed to fetch completed goals:', error);
-      }
-    };
-    getCompletedGoals();
-  }, []);
-
-  useEffect(() => {
-    const getAllJob = async () => {
-      const token = localStorage.getItem('accessToken');
-      try {
-        const res = await axios.get('https://growpro.onrender.com/job/all-jobs', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setJobCount(res.data); // Ensure your backend sends data in { count: ... } format
-        console.log(res.data);
-      } catch (error) {
-        console.error('Failed to fetch jobs:', error);
-      }
-    };
-    getAllJob();
-  }, []);
-
-  useEffect(() => {
-    const fetchTopPerformers = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get('https://growpro.onrender.com/reviews', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        const performers = response.data;
 
-        // Fetch reviews for each performer and update the state
-        const updatedPerformers = await Promise.all(performers.map(async (performer) => {
+        // Fetch employee list
+        const userResponse = await axios.get('https://growpro.onrender.com/user/employeeList');
+        setUser(userResponse.data);
+
+        // Fetch courses
+        const courseResponse = await axios.get('https://growpro.onrender.com/Course/');
+        setCourse(courseResponse.data);
+
+        // Fetch all employee goals
+        const goalsResponse = await axios.get('https://growpro.onrender.com/goal/employee-goals/', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setGetAllEmployeeGoals(goalsResponse.data);
+
+        // Fetch completed goals
+        const completedGoalsResponse = await axios.get('https://growpro.onrender.com/goal/completedgoals', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEmployeeCounts(completedGoalsResponse.data);
+
+        // Fetch all jobs
+        const jobsResponse = await axios.get('https://growpro.onrender.com/job/all-jobs', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setJobCount(jobsResponse.data.count);
+
+        // Fetch top performers
+        const performersResponse = await axios.get('https://growpro.onrender.com/reviews', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const updatedPerformers = await Promise.all(performersResponse.data.map(async (performer: Performer) => {
           try {
             const reviewResponse = await axios.get(`https://growpro.onrender.com/reviews/${performer.userId}`, {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
+              headers: { Authorization: `Bearer ${token}` },
             });
             return { ...performer, overallAverageRating: reviewResponse.data.overallAverageRating || 'N/A' };
           } catch (err) {
@@ -121,15 +69,15 @@ const ManagerDashboard = () => {
 
         setTopPerformers(updatedPerformers);
       } catch (error) {
-        console.error('Failed to fetch top performers:', error);
+        console.error('Failed to fetch data:', error);
       }
     };
 
-    fetchTopPerformers();
+    fetchData();
   }, []);
 
-  const renderStarRating = (rating) => {
-    const stars = parseInt(rating, 10);
+  const renderStarRating = (rating: string | undefined) => {
+    const stars = parseInt(rating ?? '', 10);
     if (isNaN(stars) || stars < 1 || stars > 5) return 'N/A';
 
     return Array.from({ length: 5 }, (_, index) => (
@@ -141,6 +89,7 @@ const ManagerDashboard = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Manager Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
         {/* Team Overview */}
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
           <FaUsers className="text-3xl text-blue-500 mr-4" />
@@ -149,7 +98,6 @@ const ManagerDashboard = () => {
             <p>Number of team members: <span className="font-bold">{user.length}</span></p>
           </div>
         </div>
-
 
         {/* Task Assignments */}
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
@@ -165,8 +113,8 @@ const ManagerDashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
           <FaBell className="text-3xl text-yellow-500 mr-4" />
           <div>
-            <h2 className="text-xl font-semibold mb-2">Jobposting</h2>
-            <p>Number of Job Posted: <span className="font-bold">{jobCount.length}</span></p>
+            <h2 className="text-xl font-semibold mb-2">Job Posting</h2>
+            <p>Number of Jobs Posted: <span className="font-bold">{jobCount}</span></p>
           </div>
         </div>
 
@@ -192,7 +140,9 @@ const ManagerDashboard = () => {
 
         {/* Top Performers Section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-2 flex items-center"><FaTrophy className="text-yellow-500 mr-2" />Top Performers</h2>
+          <h2 className="text-xl font-semibold mb-2 flex items-center">
+            <FaTrophy className="text-yellow-500 mr-2" /> Top Performers
+          </h2>
           <table className="min-w-full bg-white shadow-md rounded">
             <thead>
               <tr>

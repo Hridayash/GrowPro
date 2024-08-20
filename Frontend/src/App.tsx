@@ -16,15 +16,12 @@ import ProfileRead from "./components/profile/profileRead";
 import AllJobs from "./components/manager/jobs";
 import JobDetail from "./components/manager/jobDetails";
 import TrainingMaterial from "./components/TrainingMaterial/training";
-
 import AddTrainingMaterial from "./components/TrainingMaterial/addTrainingMaterials";
 import PerformanceReview from "./components/performanceReview/PerformaceReview";
 import EditJobPost from "./components/manager/editJobPost";
 import Applicant from "./components/manager/applicant";
 import UserApplications from "./components/manager/userApplicant";
-import ReviewList from "./components/Reviews/reviews";
 import ManagerPerformanceReview from "./components/Reviews/reviews";
-
 import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import About from "./components/Footer/About";
 import Contact from "./components/Footer/Contact";

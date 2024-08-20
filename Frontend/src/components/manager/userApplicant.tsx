@@ -1,31 +1,43 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 
-const UserApplications = () => {
-  const [applications, setApplications] = useState([]);
-  const { userId } = useParams(); // Get the user ID from the URL
+interface Job {
+  Title: string;
+}
+
+interface Application {
+  Id: number;
+  Job: Job;
+  AppliedAt: string;
+  Status: string;
+}
+
+const UserApplications: React.FC = () => {
+  const [applications, setApplications] = useState<Application[]>([]);
+  const { userId } = useParams<string>();
 
   const fetchUserApplications = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`https://growpro.onrender.com/JobApplication/user/${userId}`, {
+      const response = await axios.get<Application[]>(`https://growpro.onrender.com/JobApplication/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setApplications(response.data);
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching applications:', err);
+      // Optionally, you can set some error state here and show an error message
     }
   };
 
   useEffect(() => {
     fetchUserApplications();
-  }, []);
+  }, [userId]);
 
-const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'Accepted':
         return 'bg-green-300 text-green-700 rounded-xl p-2';

@@ -1,100 +1,143 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 
-export default function Applicant() {
-  const [applicants, setApplicants] = useState([]);
-  const [userRole, setUserRole] = useState('');
-  const { JobId } = useParams(); 
-  
-  const fetchUserRole = async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`https://growpro.onrender.com/userRole`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserRole(response.data.role);
-    } catch (err) {
-      console.log(err);
-    }
+interface Applicant {
+  Id: number;
+  Profile: {
+    User: {
+      Id: number;
+      Name: string;
+      Email: string;
+    };
+    Position: string;
   };
-
-  const fetchApplicants = async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`https://growpro.onrender.com/JobApplication`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const applicantsData = response.data;
-      for (const applicant of applicantsData) {
-        await fetchReviews(applicant);
-      }
-      setApplicants(applicantsData);
-    } catch (err) {
-      console.log(err);
-    }
+  JobId: number;
+  Status: string;
+  overallAverageRating?: string;
+  Job?: {
+    Title: string;
   };
+}
 
-  const fetchReviews = async (applicant) => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`https://growpro.onrender.com/reviews/${applicant.Profile.User.Id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      applicant.overallAverageRating = response.data.overallAverageRating || 'N/A';
-    } catch (err) {
-      console.error('Error fetching reviews:', err);
-    }
-  };
+interface Review {
+  userId: number;
+  overallAverageRating: string;
+}
 
+const Applicant: React.FC = () => {
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [userRole, setUserRole] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { JobId } = useParams<{ JobId: string }>();
+  console.log(userRole)
   useEffect(() => {
-    fetchUserRole();
-    fetchApplicants();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) throw new Error('No token found');
 
-  const handleAccept = async (applicantId) => {
+        const userRoleResponse = await axios.get<{ role: string }>('https://growpro.onrender.com/userRole', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserRole(userRoleResponse.data.role);
+
+        const applicantsResponse = await axios.get<Applicant[]>('https://growpro.onrender.com/JobApplication', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const applicantsData = applicantsResponse.data;
+
+        // Fetch reviews in bulk if possible
+        const userIds = applicantsData.map(applicant => applicant.Profile.User.Id);
+        const reviewsResponse = await axios.get<Review[]>('https://growpro.onrender.com/reviews/bulk', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            userIds: userIds.join(','),
+          },
+        });
+
+        const reviewsData = reviewsResponse.data;
+        const reviewsMap = reviewsData.reduce((acc, review) => {
+          acc[review.userId] = review.overallAverageRating;
+          return acc;
+        }, {} as Record<number, string>);
+
+        // Attach reviews to applicants
+        const updatedApplicants = applicantsData.map(applicant => ({
+          ...applicant,
+          overallAverageRating: reviewsMap[applicant.Profile.User.Id] || 'N/A',
+        }));
+
+        setApplicants(updatedApplicants);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [JobId]);
+
+  const handleAccept = async (applicantId: number) => {
     try {
       const token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No token found');
+
       await axios.patch(`https://growpro.onrender.com/JobApplication/${applicantId}`, {
         approved: true,
-        status: "Accepted"
+        status: "Accepted",
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       alert('User Accepted');
-      fetchApplicants();
+      setApplicants(prevApplicants =>
+        prevApplicants.map(applicant =>
+          applicant.Id === applicantId ? { ...applicant, Status: 'Accepted' } : applicant
+        )
+      );
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      alert('Failed to accept user');
     }
   };
 
-  const handleReject = async (applicantId) => {
+  const handleReject = async (applicantId: number) => {
     try {
       const token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No token found');
+
       await axios.patch(`https://growpro.onrender.com/JobApplication/${applicantId}`, {
         approved: false,
-        status: "Rejected"
+        status: "Rejected",
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       alert('User Rejected');
-      fetchApplicants();
+      setApplicants(prevApplicants =>
+        prevApplicants.map(applicant =>
+          applicant.Id === applicantId ? { ...applicant, Status: 'Rejected' } : applicant
+        )
+      );
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      alert('Failed to reject user');
     }
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'Accepted':
         return 'bg-green-300 text-green-700 rounded-xl p-2';
@@ -107,7 +150,7 @@ export default function Applicant() {
     }
   };
 
-  const renderStarRating = (rating) => {
+  const renderStarRating = (rating: string) => {
     const stars = parseInt(rating, 10);
     if (isNaN(stars) || stars < 1 || stars > 5) return null;
 
@@ -119,17 +162,18 @@ export default function Applicant() {
       </div>
     );
   };
-  const jobApplicants = applicants.filter(applicant => applicant.JobId === parseInt(JobId));
 
+  const jobApplicants = applicants.filter(applicant => applicant.JobId === parseInt(JobId || '0', 10));
   const jobTitle = jobApplicants.length > 0 ? jobApplicants[0]?.Job?.Title : '';
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <>
       <div className="flex justify-between mb-4">
         <h1 className="font-bold text-3xl">Applicants for {jobTitle}</h1>
-       
       </div>
-      
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-gray-800 text-white">
@@ -151,7 +195,7 @@ export default function Applicant() {
                   </Link>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{applicant.Profile.User.Email}</td>
-                <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{renderStarRating(applicant.overallAverageRating)}</td>
+                <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{renderStarRating(applicant.overallAverageRating || 'N/A')}</td>
                 <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{applicant.Profile.Position}</td>
                 <td className={`px-6 py-2 whitespace-nowrap cursor-pointer`}>
                   <button className={getStatusClass(applicant.Status)}>
@@ -169,4 +213,6 @@ export default function Applicant() {
       </div>
     </>
   );
-}
+};
+
+export default Applicant;

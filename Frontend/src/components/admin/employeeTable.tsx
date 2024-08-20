@@ -4,13 +4,21 @@ import { FaPen } from 'react-icons/fa';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
-const EmployeeList = () => {
-  const [employees, setEmployees] = useState([]);
+// Define the type for employee data
+interface Employee {
+  Id: number;
+  Name: string;
+  Email: string;
+  Role: string;
+}
+
+const EmployeeList: React.FC = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('https://growpro.onrender.com/user/employeeList');
+        const response = await axios.get<Employee[]>('https://growpro.onrender.com/user/employeeList');
         setEmployees(response.data);
       } catch (error) {
         console.error('Error fetching employees:', error);
@@ -20,7 +28,7 @@ const EmployeeList = () => {
     fetchEmployees();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     try {
       await axios.delete(`https://growpro.onrender.com/user/delete-user/${id}`);
       setEmployees(prevEmployees => prevEmployees.filter(employee => employee.Id !== id));

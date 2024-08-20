@@ -1,10 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import axios from 'axios';
 
-const ManagerPerformanceReview = () => {
-  const [employees, setEmployees] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [ratings, setRatings] = useState({
+// Define types for employee and ratings
+interface Employee {
+  Id: number;
+  Name: string;
+}
+
+interface Ratings {
+  qualityOfWork: number;
+  productivity: number;
+  attendanceAndPunctuality: number;
+  communicationSkills: number;
+  teamwork: number;
+  problemSolvingAbilities: number;
+  initiative: number;
+  adaptability: number;
+  leadershipPotential: number;
+  customerSatisfaction: number;
+}
+
+const ManagerPerformanceReview: React.FC = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [ratings, setRatings] = useState<Ratings>({
     qualityOfWork: 0,
     productivity: 0,
     attendanceAndPunctuality: 0,
@@ -16,7 +35,7 @@ const ManagerPerformanceReview = () => {
     leadershipPotential: 0,
     customerSatisfaction: 0,
   });
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState<string>('');
 
   useEffect(() => {
     fetchEmployees();
@@ -24,20 +43,18 @@ const ManagerPerformanceReview = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('https://growpro.onrender.com/user/employeeList');
+      const response = await axios.get<Employee[]>('https://growpro.onrender.com/user/employeeList');
       setEmployees(response.data);
     } catch (err) {
       console.error('Error fetching employees:', err);
     }
   };
 
-  const handleStarClick = (field, stars) => {
-    const numericStars = parseInt(stars, 10);
-
-    if (!isNaN(numericStars) && numericStars >= 1 && numericStars <= 5) {
+  const handleStarClick = (field: keyof Ratings, stars: number) => {
+    if (stars >= 1 && stars <= 5) {
       setRatings(prevRatings => ({
         ...prevRatings,
-        [field]: numericStars,
+        [field]: stars,
       }));
     } else {
       console.error('Invalid rating input:', stars);
@@ -53,23 +70,9 @@ const ManagerPerformanceReview = () => {
         return;
       }
 
-      // Prepare ratings object with integers
-      const formattedRatings = {
-        qualityOfWork: parseInt(ratings.qualityOfWork, 10),
-        productivity: parseInt(ratings.productivity, 10),
-        attendanceAndPunctuality: parseInt(ratings.attendanceAndPunctuality, 10),
-        communicationSkills: parseInt(ratings.communicationSkills, 10),
-        teamwork: parseInt(ratings.teamwork, 10),
-        problemSolvingAbilities: parseInt(ratings.problemSolvingAbilities, 10),
-        initiative: parseInt(ratings.initiative, 10),
-        adaptability: parseInt(ratings.adaptability, 10),
-        leadershipPotential: parseInt(ratings.leadershipPotential, 10),
-        customerSatisfaction: parseInt(ratings.customerSatisfaction, 10),
-      };
-
       const response = await axios.post('https://growpro.onrender.com/reviews/', {
         userId: selectedEmployee.Id,
-        ratings: formattedRatings,
+        ratings,
         comment,
       }, {
         headers: {
@@ -88,16 +91,18 @@ const ManagerPerformanceReview = () => {
   const renderStarInputs = () => {
     return (
       <div className="grid grid-cols-2 gap-4">
-        {Object.keys(ratings).map(metric => (
+        {Object.keys(ratings).map((metric) => (
           <div key={metric} className="flex items-center">
-            <label className="block mb-1">{metric.replace(/([A-Z])/g, ' $1').trim()}: </label>
+            <label className="block mb-1">
+              {metric.replace(/([A-Z])/g, ' $1').trim()}: 
+            </label>
             <div className="flex ml-2">
               {[...Array(5)].map((_, index) => (
                 <button
                   key={index}
                   type="button"
-                  className={`text-2xl ${index < ratings[metric] ? 'text-yellow-500' : 'text-gray-300'} focus:outline-none`}
-                  onClick={() => handleStarClick(metric, index + 1)}
+                  className={`text-2xl ${index < ratings[metric as keyof Ratings] ? 'text-yellow-500' : 'text-gray-300'} focus:outline-none`}
+                  onClick={() => handleStarClick(metric as keyof Ratings, index + 1)}
                 >
                   ★
                 </button>
@@ -114,7 +119,9 @@ const ManagerPerformanceReview = () => {
       <h2 className="text-xl font-semibold mb-4">Select an employee:</h2>
       <select
         className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        onChange={(e) => setSelectedEmployee(employees.find(emp => emp.Id === parseInt(e.target.value)))}
+        onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedEmployee(
+          employees.find(emp => emp.Id === parseInt(e.target.value)) || null
+        )}
       >
         <option value="">Select an employee</option>
         {employees.map(employee => (
@@ -131,9 +138,9 @@ const ManagerPerformanceReview = () => {
           <label className="block mt-4 mb-1">Comment:</label>
           <textarea
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setComment(e.target.value)}
             className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            rows="3"
+            rows={3}
           ></textarea>
 
           <button

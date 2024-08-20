@@ -2,32 +2,52 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getUserId } from '../authcheck/getRole'; // Assuming this function retrieves userId
 
-const EmployeePerformanceReviews = () => {
-  const [reviews, setReviews] = useState([]);
-  const [overall, setOverall ]  = useState();
+// Define types for review and response
+interface Review {
+  id: number;
+  qualityOfWork: number;
+  productivity: number;
+  attendanceAndPunctuality: number;
+  communicationSkills: number;
+  teamwork: number;
+  problemSolvingAbilities: number;
+  initiative: number;
+  adaptability: number;
+  leadershipPotential: number;
+  customerSatisfaction: number;
+}
+
+interface ReviewsResponse {
+  reviews: Review[];
+  overallAverageRating: number;
+}
+
+const EmployeePerformanceReviews: React.FC = () => {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [overall, setOverall] = useState<number | undefined>(undefined);
   const userId = getUserId(); // Assuming this function retrieves userId from somewhere
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`https://growpro.onrender.com/reviews/${userId}`, {
+        const response = await axios.get<ReviewsResponse>(`https://growpro.onrender.com/reviews/${userId}`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setReviews(response.data.reviews || []); // Ensure you are setting the correct data
-        setOverall(response.data.overallAverageRating)
+        setReviews(response.data.reviews || []);
+        setOverall(response.data.overallAverageRating);
       } catch (err) {
         console.error('Error fetching reviews:', err);
       }
     };
 
     fetchReviews();
-  }, [userId]); // Fetch reviews whenever userId changes
+  }, [userId]);
 
-  const renderStarRating = (rating) => {
-    const stars = parseInt(rating, 10);
+  const renderStarRating = (rating: number) => {
+    const stars = parseInt(rating.toString(), 10);
     if (isNaN(stars) || stars < 1 || stars > 5) return null;
 
     return (
@@ -88,7 +108,7 @@ const EmployeePerformanceReviews = () => {
               </div>
               <div className="flex justify-between mb-2">
                 <div>Overall</div>
-                <div>{renderStarRating(overall)}</div>
+                <div>{renderStarRating(overall ?? 0)}</div>
               </div>
             </div>
           ))}

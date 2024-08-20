@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaPen } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,7 @@ const Profile = () => {
   });
   const [name, setName] = useState('');
   
-
+  console.log(user , userId);
   useEffect(() => {
     const fetchUserDetail = async () => {
       const token = localStorage.getItem('accessToken');

@@ -32,7 +32,7 @@ export default function EditEmployee() {
           const response = await axios.get<Employee>(`https://growpro.onrender.com/user/get-user/${id}`);
           setUser(response.data);
         } catch (err) {
-          console.error(err);
+          console.error('Error fetching user:', err);
         }
       };
       getUser();
@@ -51,22 +51,21 @@ export default function EditEmployee() {
         await axios.put(`https://growpro.onrender.com/user/edit-user/${id}`, user);
         navigate('/my-team');
       } catch (err) {
-        console.error(err);
+        console.error('Error updating user:', err);
       }
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`https://growpro.onrender.com/user/delete-user/${id}`);
-      // setEmployees(prevEmployees => prevEmployees.filter(employee => employee.Id !== id));
-    } catch (error) {
-      console.error('Error deleting employee:', error);
+  const handleDelete = async () => {
+    if (id) {
+      try {
+        await axios.delete(`https://growpro.onrender.com/user/delete-user/${id}`);
+        navigate('/my-team');
+      } catch (error) {
+        console.error('Error deleting employee:', error);
+      }
     }
   };
-  
-
-
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -108,7 +107,6 @@ export default function EditEmployee() {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           >
-            
             <option value="manager">Manager</option>
             <option value="employee">Employee</option>
           </select>
@@ -121,16 +119,17 @@ export default function EditEmployee() {
             Save
           </button>
           <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
-                        onClick={() => handleDelete(id)}
-                      >
-                        Delete
-                        <RiDeleteBin5Line />
-                      </button>
+            type="button"
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+            onClick={handleDelete}
+          >
+            Delete
+            <RiDeleteBin5Line className="ml-2" />
+          </button>
           <button
             type="button"
             onClick={() => navigate('/my-team')}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Cancel
           </button>

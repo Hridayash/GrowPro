@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AddTrainingMaterial = () => {
-  const navigate = useNavigate()
-  const [form, setForm] = useState({
+// Define the shape of the form state
+interface FormState {
+  title: string;
+  description: string;
+  fileType: string;
+  duration: string;
+  file: File | null;
+}
+
+const AddTrainingMaterial: React.FC = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState<FormState>({
     title: '',
     description: '',
     fileType: '',
@@ -11,22 +20,22 @@ const AddTrainingMaterial = () => {
     file: null,
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm({
-      ...form,
+    setForm(prevForm => ({
+      ...prevForm,
       [name]: value,
-    });
+    }));
   };
 
-  const handleFileChange = (e) => {
-    setForm({
-      ...form,
-      file: e.target.files[0],
-    });
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setForm(prevForm => ({
+      ...prevForm,
+      file: e.target.files ? e.target.files[0] : null,
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     // Prepare form data to send to backend
@@ -35,7 +44,9 @@ const AddTrainingMaterial = () => {
     formData.append('description', form.description);
     formData.append('fileType', form.fileType);
     formData.append('duration', form.duration);
-    formData.append('file', form.file);
+    if (form.file) {
+      formData.append('file', form.file);
+    }
 
     try {
       // Fetch POST endpoint on your backend
@@ -58,7 +69,7 @@ const AddTrainingMaterial = () => {
         duration: '',
         file: null,
       });
-      navigate('/training-material')
+      navigate('/training-material');
 
     } catch (error) {
       console.error('Error uploading course:', error);

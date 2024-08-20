@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaPen } from 'react-icons/fa';
-import { RiDeleteBin5Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
-export default function Myteam() {
-  const [employees, setEmployees] = useState([]);
+interface Employee {
+  Id: number;
+  Name: string;
+  Email: string;
+  Role: string;
+}
+
+export default function MyTeam() {
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('https://growpro.onrender.com/user/employeeList');
+        const response = await axios.get<Employee[]>('https://growpro.onrender.com/user/employeeList');
         setEmployees(response.data);
       } catch (error) {
         console.error('Error fetching employees:', error);
@@ -19,8 +25,6 @@ export default function Myteam() {
 
     fetchEmployees();
   }, []);
-
-
 
   return (
     <>
@@ -44,21 +48,21 @@ export default function Myteam() {
           <tbody className="divide-y divide-gray-200">
             {employees.map((employee) => (
               <tr key={employee.Id} className="hover:bg-gray-100">
-                <Link to={`/profile/${employee.Id}`} className="contents">
-                  <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{employee.Name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{employee.Email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap cursor-pointer">{employee.Role}</td>
-                  <td className="px-6 py-4 whitespace-nowrap cursor-pointer">
-                    <div className="flex gap-1">
-                      <Link to={`/manage-user/edit-user/${employee.Id}`}>
-                        <button className="bg-blue-500 px-4 h-8 rounded-xl text-white">
-                          <FaPen />
-                        </button>
-                      </Link>
-                  
-                    </div>
-                  </td>
-                </Link>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <Link to={`/profile/${employee.Id}`} className="text-blue-600 hover:underline">{employee.Name}</Link>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">{employee.Email}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{employee.Role}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex gap-1">
+                    <Link to={`/manage-user/edit-user/${employee.Id}`}>
+                      <button className="bg-blue-500 text-white px-4 h-8 rounded-xl">
+                        <FaPen />
+                      </button>
+                    </Link>
+                    {/* You can add a delete button here if needed */}
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

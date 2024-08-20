@@ -2,47 +2,65 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getUserId } from '../authcheck/getRole';
 
+interface Employee {
+  Id: string;
+  Name: string;
+}
+
+interface Manager {
+  Name: string;
+}
+
+interface Goal {
+  Id: string;
+  Title: string;
+  Description: string;
+  Employee: Employee;
+  Manager: Manager;
+  Completed: boolean;
+}
+
 export default function SetGoal() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [employeeId, setEmployeeId] = useState('');
-  const [employees, setEmployees] = useState([]); // State to store employees
-  const [goals, setGoals] = useState([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const ManagerId = getUserId();
 
-  const fetchGoals = async () => {
-    try {
-      const response = await axios.get('https://growpro.onrender.com/goal/employee-goals', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
-        },
-      });
-      setGoals(response.data);
-    } catch (error) {
-      console.error('Failed to fetch goals', error);
-    }
-  };
-
-  const fetchEmployees = async () => {
-    try {
-      const response = await axios.get('https://growpro.onrender.com/user/employeeList', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
-        },
-      });
-      setEmployees(response.data);
-    } catch (error) {
-      console.error('Failed to fetch employees', error);
-    }
-  };
-
   useEffect(() => {
-    fetchGoals();
-    fetchEmployees(); // Fetch employees when the component mounts
+    const fetchData = async () => {
+      try {
+        const [goalsResponse, employeesResponse] = await Promise.all([
+          axios.get('https://growpro.onrender.com/goal/employee-goals', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+          }),
+          axios.get('https://growpro.onrender.com/user/employeeList', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+          }),
+        ]);
+
+        setGoals(goalsResponse.data);
+        setEmployees(employeesResponse.data);
+      } catch (error) {
+        setError('Failed to fetch data. Please try again later.');
+        console.error('Failed to fetch data', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await axios.post(
@@ -50,21 +68,24 @@ export default function SetGoal() {
         { Title: title, Description: description, EmployeeId: employeeId, ManagerId: ManagerId },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         }
       );
       alert('Goal set successfully');
-      fetchGoals();
       setTitle('');
       setDescription('');
       setEmployeeId('');
       setShowForm(false); // Hide the form after submitting
+      
     } catch (error) {
       console.error(error);
       alert('Failed to set goal');
     }
   };
+
+  if (loading) return <div className="text-gray-600">Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <>

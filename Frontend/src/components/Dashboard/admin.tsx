@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { FaUserPlus, FaUserEdit, FaUserTimes, FaChartPie } from 'react-icons/fa';
+import { FaUserPlus, FaUserEdit,  FaChartPie } from 'react-icons/fa';
 import axios from 'axios';
 
-const AdminDashboard = () => {
-  const [users, setUsers] = useState([]);
+// Define types for User
+interface User {
+  id: number;
+  email: string;
+  role: 'admin' | 'manager' | 'employee';
+}
 
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       const response = await axios.get('/api/users');
-//       setUsers(response.data);
-//     };
+const AdminDashboard: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
 
-//     fetchUsers();
-//   }, []);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get<User[]>('/api/users');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

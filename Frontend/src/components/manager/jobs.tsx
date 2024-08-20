@@ -1,18 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { format, formatDistanceToNow } from 'date-fns';
 import getUserRole from '../authcheck/getRole';
 
+interface Job {
+  Id: number;
+  Title: string;
+  Description: string;
+  DatePosted: string;
+}
+
+interface Applicant {
+  JobId: number;
+}
+
 export default function AllJobs() {
-  const [jobs, setJobs] = useState([]);
-  const [applicants, setApplicants] = useState([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
   const role = getUserRole();
 
   const fetchJobs = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('https://growpro.onrender.com/job/all-jobs', {
+      if (!token) throw new Error('No access token found');
+      const response = await axios.get<Job[]>('https://growpro.onrender.com/job/all-jobs', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -26,15 +38,15 @@ export default function AllJobs() {
   const fetchApplicants = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('https://growpro.onrender.com/JobApplication', {
+      if (!token) throw new Error('No access token found');
+      const response = await axios.get<Applicant[]>('https://growpro.onrender.com/JobApplication', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setApplicants(response.data);
-      console.log(applicants);
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching applicants:', err);
     }
   };
 
@@ -45,7 +57,9 @@ export default function AllJobs() {
 
   const handleJobCRUD = role === "employee" ? null : (
     <Link to="/create-job">
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3">+ Add</button>
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-3">
+        + Add
+      </button>
     </Link>
   );
 
@@ -66,7 +80,13 @@ export default function AllJobs() {
                   <p className="text-red-500">
                     {formatDistanceToNow(new Date(job.DatePosted), { addSuffix: true })}
                   </p>
-                  {role === "employee" ? <p>{jobApplicants.length} Applicant(s)</p> :<Link to={`/applicants/${job.Id}`}><p>{jobApplicants.length} Applicant(s)</p></Link> }
+                  {role === "employee" ? (
+                    <p>{jobApplicants.length} Applicant(s)</p>
+                  ) : (
+                    <Link to={`/applicants/${job.Id}`}>
+                      <p>{jobApplicants.length} Applicant(s)</p>
+                    </Link>
+                  )}
                 </div>
               </div>
 

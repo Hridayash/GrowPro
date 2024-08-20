@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaClipboardList, FaStar, FaBriefcase, FaChartLine } from 'react-icons/fa';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getUserId } from '../authcheck/getRole'; // Assuming this function retrieves userId
+
+interface Goal {
+  id: number;
+  name: string;
+  Completed: boolean; // Ensure this is a boolean
+}
 
 const EmployeeDashboard = () => {
   const [totalGoals, setTotalGoals] = useState(0);
@@ -12,20 +18,26 @@ const EmployeeDashboard = () => {
   const [totalJobsPosted, setTotalJobsPosted] = useState(0);
   const [approvedJobs, setApprovedJobs] = useState(0);
   const [appliedJobs, setAppliedJobs] = useState(0);
-  const [yearlyProgress, setYearlyProgress] = useState([]);
+  const [yearlyProgress, setYearlyProgress] = useState<{ year: string, value: number | null }[]>([]);
 
   const employeeId = getUserId();
 
   useEffect(() => {
-    const fetchGoals = async () => {
+    if (!employeeId) {
+      console.error('Employee ID is not available.');
+      return;
+    }
+
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`https://growpro.onrender.com/goal/employee-goals/${employeeId}`, {
+        // Fetch goals
+        const goalsResponse = await axios.get<Goal[]>(`https://growpro.onrender.com/goal/employee-goals/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           }
         });
 
-        const goals = response.data;
+        const goals = goalsResponse.data;
         const total = goals.length;
         const completed = goals.filter(goal => goal.Completed).length;
         const pending = total - completed;
@@ -33,91 +45,57 @@ const EmployeeDashboard = () => {
         setTotalGoals(total);
         setCompletedGoals(completed);
         setPendingGoals(pending);
-      } catch (error) {
-        console.error('Error fetching goals:', error);
-      }
-    };
 
-    fetchGoals();
-  }, [employeeId]);
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get(`https://growpro.onrender.com/reviews/${employeeId}`, {
+        // Fetch reviews
+        const reviewsResponse = await axios.get(`https://growpro.onrender.com/reviews/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           }
         });
 
-        setAverageRating(response.data.overallAverageRating || 0);
+        setAverageRating(reviewsResponse.data.overallAverageRating || 0);
+
+        // Fetch job data
+        const jobsResponse = await axios.get('https://growpro.onrender.com/job/overview', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          }
+        });
+
+        setTotalJobsPosted(jobsResponse.data.totalJobsPosted);
+        setApprovedJobs(jobsResponse.data.approvedJobs);
+        setAppliedJobs(jobsResponse.data.appliedJobs);
+
       } catch (error) {
-        console.error('Error fetching reviews:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchReviews();
-  }, [employeeId]);
-
-  useEffect(() => {
-    const fetchJobData = async () => {
-      try {
-        const token = localStorage.getItem('accessToken');
-        
-        const totalJobsResponse = await axios.get(`https://growpro.onrender.com/job/total-jobs`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        setTotalJobsPosted(totalJobsResponse.data.total);
-
-        const approvedJobsResponse = await axios.get(`https://growpro.onrender.com/job/approved-jobs`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        setApprovedJobs(approvedJobsResponse.data.approved);
-
-        const appliedJobsResponse = await axios.get(`https://growpro.onrender.com/job/applied-jobs`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        setAppliedJobs(appliedJobsResponse.data.applied);
-      } catch (error) {
-        console.error('Error fetching job data:', error);
-      }
-    };
-
-    fetchJobData();
+    fetchData();
   }, [employeeId]);
 
   // Dummy data for the line chart
   useEffect(() => {
-    const fetchYearlyProgress = () => {
-      setYearlyProgress([
-        { year: '2019', value: 20 },
-        { year: '2020', value: 35 },
-        { year: '2021', value: 50 },
-        { year: '2022', value: 65 },
-        { year: '2023', value: 80 },
-        { year: '2024', value: 90 },
-        { year: '2025', value: null } // 2025 is left vacant
-      ]);
-    };
-
-    fetchYearlyProgress();
+    setYearlyProgress([
+      { year: '2019', value: 20 },
+      { year: '2020', value: 35 },
+      { year: '2021', value: 50 },
+      { year: '2022', value: 65 },
+      { year: '2023', value: 80 },
+      { year: '2024', value: 90 },
+      { year: '2025', value: null } // 2025 is left vacant
+    ]);
   }, []);
 
-  const renderStarRating = (rating) => {
-    const stars = Math.round(parseFloat(rating));
+  const renderStarRating = (rating: number) => {
+    const stars = Math.round(rating);
     return Array.from({ length: 5 }, (_, index) => (
       <FaStar key={index} className={`inline-block ${index < stars ? 'text-yellow-500' : 'text-gray-300'}`} />
     ));
   };
 
   // Progress Bar Component
-  const ProgressBar = ({ value, max, label }) => {
+  const ProgressBar = ({ value, max, label }: { value: number; max: number; label: string }) => {
     const percentage = (value / max) * 100;
 
     return (

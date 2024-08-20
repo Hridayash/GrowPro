@@ -6,6 +6,13 @@ import NavEmployee from "../Navigation/navEmployee";
 // Define a type for the user state
 type User = string | null;
 
+// Define a type for the error object
+interface AxiosError {
+  response?: {
+    status: number;
+  };
+}
+
 export default function HomeEmployee() {
     // Initialize the user state with the User type
     const [user, setUser] = useState<User>(null);
@@ -22,7 +29,7 @@ export default function HomeEmployee() {
                     return;
                 }
 
-                const response = await axios.get('https://growpro.onrender.com/user', {
+                const response = await axios.get<{ Name: string }>('https://growpro.onrender.com/user', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -30,13 +37,14 @@ export default function HomeEmployee() {
 
                 setUser(response.data.Name);
 
-            } catch (err: any) {  // TypeScript requires the error type to be specified
-                console.log(err);
-                if (err.response && err.response.status === 401) {
-                    console.log('unauthorized');
+            } catch (err) {
+                const error = err as AxiosError;
+                console.log(error);
+                if (error.response && error.response.status === 401) {
+                    console.log('Unauthorized');
                     navigate('/login');
                 } else {
-                    console.log("data cannot be fetched");
+                    console.log("Data cannot be fetched");
                 }
             }
         };
@@ -46,10 +54,10 @@ export default function HomeEmployee() {
 
     return (
         <>
-            <NavEmployee name={user} />
-            <div className="flex ">
+            <NavEmployee name={user || "Guest"} /> {/* Provide a default name if `user` is null */}
+            <div className="flex">
                 <main className="p-6 ml-60 mt-12">
-                    <h1>Hello <strong>{user}</strong>, this is the home page for employees.</h1>
+                    <h1>Hello <strong>{user || "Guest"}</strong>, this is the home page for employees.</h1>
                 </main>
             </div>
         </>

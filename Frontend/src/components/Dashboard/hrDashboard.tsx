@@ -3,19 +3,30 @@ import axios from 'axios';
 import { FaClipboardList, FaCheckCircle, FaTasks, FaStar } from 'react-icons/fa';
 import { getUserId } from '../authcheck/getRole';
 
-const EmployeeDashboard = () => {
-  const [totalGoals, setTotalGoals] = useState(0);
-  const [completedGoals, setCompletedGoals] = useState(0);
-  const [pendingGoals, setPendingGoals] = useState(0);
-  const [averageRating, setAverageRating] = useState(0);
-  const [reviews, setReviews] = useState([]);
+// Define types for Goals and Reviews
+interface Goal {
+  id: number;
+  Completed: boolean;
+}
+
+interface Review {
+  comment: string;
+  [key: string]: number | string;
+}
+
+const EmployeeDashboard: React.FC = () => {
+  const [totalGoals, setTotalGoals] = useState<number>(0);
+  const [completedGoals, setCompletedGoals] = useState<number>(0);
+  const [pendingGoals, setPendingGoals] = useState<number>(0);
+  const [averageRating, setAverageRating] = useState<number>(0);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const employeeId = getUserId();
 
   useEffect(() => {
     // Fetch all goals for the employee
     const fetchGoals = async () => {
       try {
-        const response = await axios.get(`https://growpro.onrender.com/goal/employee-goals/${employeeId}`, {
+        const response = await axios.get<Goal[]>(`https://growpro.onrender.com/goal/employee-goals/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // assuming token is stored in local storage
           }
@@ -41,12 +52,11 @@ const EmployeeDashboard = () => {
     // Fetch reviews and average rating for the employee
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`https://growpro.onrender.com/review/${employeeId}`, {
+        const response = await axios.get<{ overallAverageRating: number, reviews: Review[] }>(`https://growpro.onrender.com/review/${employeeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           }
         });
-        // Ensure averageRating is correctly set
         setAverageRating(response.data.overallAverageRating || 0);
         setReviews(response.data.reviews || []);
       } catch (error) {
@@ -57,8 +67,8 @@ const EmployeeDashboard = () => {
     fetchReviews();
   }, [employeeId]);
 
-  const renderStarRating = (rating) => {
-    const stars = Math.round(parseFloat(rating));
+  const renderStarRating = (rating: number) => {
+    const stars = Math.round(rating);
     return Array.from({ length: 5 }, (_, index) => (
       <FaStar key={index} className={`inline-block ${index < stars ? 'text-yellow-500' : 'text-gray-300'}`} />
     ));
@@ -113,7 +123,7 @@ const EmployeeDashboard = () => {
                 <div className="flex space-x-1">
                   {Object.keys(review).filter(key => key !== 'comment' && typeof review[key] === 'number').map((key) => (
                     <div key={key} className="flex items-center">
-                      {renderStarRating(review[key])}
+                      {renderStarRating(review[key] as number)}
                     </div>
                   ))}
                 </div>

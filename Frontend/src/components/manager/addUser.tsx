@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+interface FormData {
+  Name: string;
+  Email: string;
+  Role: string;
+  Password: string;
+}
 
-const AddUserForm = () => {
-    const navigate = useNavigate()
-  const [formData, setFormData] = useState({
+const AddUserForm: React.FC = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({
     Name: '',
     Email: '',
     Role: 'employee', // default role
     Password: ''
   });
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const [error, setError] = useState<string | null>(null); // Error state
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -20,8 +28,11 @@ const AddUserForm = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when starting submission
+    setError(null); // Clear any previous errors
+
     try {
       const response = await axios.post('https://growpro.onrender.com/user/createUser', formData);
       console.log(response.data);
@@ -33,18 +44,19 @@ const AddUserForm = () => {
         Role: 'employee',
         Password: ''
       });
-
       navigate('/my-team');
-
     } catch (error) {
       console.error(error);
-      alert('Failed to add user');
+      setError('Failed to add user. Please try again.');
+    } finally {
+      setLoading(false); // Set loading to false after completion
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6">Add New User</h2>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -86,7 +98,6 @@ const AddUserForm = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           >
-            
             <option value="manager">Manager</option>
             <option value="hr">HR</option>
             <option value="employee">Employee</option>
@@ -109,9 +120,10 @@ const AddUserForm = () => {
         <div className="flex items-center justify-between">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
           >
-            Add User
+            {loading ? 'Adding...' : 'Add User'}
           </button>
         </div>
       </form>

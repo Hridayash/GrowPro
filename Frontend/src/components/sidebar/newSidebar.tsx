@@ -1,15 +1,24 @@
-
-
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaUserFriends } from 'react-icons/fa';
 import { IoBriefcaseSharp } from 'react-icons/io5';
 import { RiBook2Fill } from 'react-icons/ri';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { TbTargetArrow } from "react-icons/tb";
 import { GiGraduateCap } from "react-icons/gi";
-import { Link } from 'react-router-dom';
 import { VscFeedback } from "react-icons/vsc";
 
-const NewSidebar = ({ role , userId }) => {
+// Define types for props
+interface NewSideBarProps {
+  role: 'hr' | 'manager' | 'employee' | 'guest'; // Adjust as necessary
+  userId: string;
+}
+interface LinkType {
+    name: string,
+    path : string
+}
+
+const NewSideBar: React.FC<NewSideBarProps> = ({ role, userId }) => {
   const HRLinks = [
     { name: 'Dashboard', path: '/' },
     { name: 'My Team', path: '/my-team' },
@@ -18,7 +27,6 @@ const NewSidebar = ({ role , userId }) => {
     { name: 'Goals', path: '/setGoal' },
     { name: 'Feedback', path: '/setFeedback' },
   ];
-
 
   const managerLinks = [
     { name: 'Dashboard', path: '/' },
@@ -33,15 +41,13 @@ const NewSidebar = ({ role , userId }) => {
   const employeeLinks = [
     { name: 'Dashboard', path: '/' },
     { name: 'Job Postings', path: '/job-postings' },
-    // { name: 'Performance Reviews', path: '/reviews' },
     { name: 'Training Material', path: '/training-material' },
-    // Note: The Track Application path is a placeholder and should be dynamically replaced
     { name: 'Track Application', path: `/applicant/${userId}` },
     { name: 'Goals', path: '/getGoal' },
     { name: 'Feedback', path: '/giveFeedback' },
   ];
 
-  let links;
+  let links : LinkType[];
 
   switch (role) {
     case 'hr':
@@ -79,10 +85,7 @@ const NewSidebar = ({ role , userId }) => {
         ))}
       </ul>
     </div>
-    
   );
- 
-  
 };
 
-export default NewSidebar;
+export default NewSideBar;
