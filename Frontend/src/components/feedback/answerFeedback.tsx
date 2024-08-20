@@ -2,33 +2,50 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-const AnswerFeedback = () => {
-  const { id } = useParams();
-  const [feedback, setFeedback] = useState(null);
-  const [responses, setResponses] = useState([]);
+// Define types for feedback and responses
+interface Question {
+  Id: string;
+  Text: string;
+}
+
+interface Feedback {
+  Id: string;
+  Title: string;
+  Questions: Question[];
+}
+
+interface Response {
+  questionId: string;
+  answer: string;
+}
+
+const AnswerFeedback: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Type the URL parameter
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [responses, setResponses] = useState<Response[]>([]);
 
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
         const response = await axios.get(`https://growpro.onrender.com/feedbacks`);
-        const allFeedback = response.data;
+        const allFeedback: Feedback[] = response.data;
 
         // Find the specific feedback by ID
-        const selectedFeedback = allFeedback;
+        const selectedFeedback = allFeedback.find((feed) => feed.Id === id);
         console.log(selectedFeedback);
 
         if (selectedFeedback) {
           setFeedback(selectedFeedback);
 
           // Initialize responses based on Questions array
-          // if (Array.isArray(selectedFeedback.Questions)) {
-          //   setResponses(
-          //     selectedFeedback.Questions.map((question) => ({
-          //       questionId: question.Id,
-          //       answer: '',
-          //     }))
-          //   );
-          // }
+          if (Array.isArray(selectedFeedback.Questions)) {
+            setResponses(
+              selectedFeedback.Questions.map((question) => ({
+                questionId: question.Id,
+                answer: '',
+              }))
+            );
+          }
         } else {
           console.error('Feedback not found');
         }
@@ -40,13 +57,13 @@ const AnswerFeedback = () => {
     fetchFeedback();
   }, [id]);
 
-  const handleResponseChange = (index, value) => {
+  const handleResponseChange = (index: number, value: string) => {
     const newResponses = [...responses];
     newResponses[index].answer = value;
     setResponses(newResponses);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await axios.post(`https://growpro.onrender.com/feedbacks/${id}/responses`, {
@@ -64,16 +81,8 @@ const AnswerFeedback = () => {
 
   return (
     <div className="p-4">
-
-
-      {feedback.map((feed)=>(
-        <li key={feed.id}>
-          {feed.Title}
-
-        </li>
-      ))}
-      
-      {/* <form onSubmit={handleSubmit}>
+      <h2>{feedback.Title}</h2>
+      <form onSubmit={handleSubmit}>
         {feedback.Questions && feedback.Questions.map((question, index) => (
           <div key={question.Id} className="mb-4">
             <label className="block text-gray-700">{question.Text}</label>
@@ -92,7 +101,7 @@ const AnswerFeedback = () => {
         >
           Submit Answers
         </button>
-      </form> */}
+      </form>
     </div>
   );
 };

@@ -2,22 +2,30 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { getUserId } from '../authcheck/getRole';
 
-const CreateFeedback = () => {
-  const userId = getUserId();
-  const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState([{ text: '' }]);
+// Define types for questions and form state
+interface Question {
+  text: string;
+}
 
-  const handleQuestionChange = (index, value) => {
+const CreateFeedback: React.FC = () => {
+  const userId = getUserId();  // Assume this function correctly returns a user ID
+  const [title, setTitle] = useState<string>('');
+  const [questions, setQuestions] = useState<Question[]>([{ text: '' }]);
+
+  // Handle change in question text
+  const handleQuestionChange = (index: number, value: string) => {
     const newQuestions = [...questions];
     newQuestions[index].text = value;
     setQuestions(newQuestions);
   };
 
+  // Add a new question field
   const addQuestion = () => {
     setQuestions([...questions, { text: '' }]);
   };
 
-  const handleSubmit = async (e) => {
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await axios.post('https://growpro.onrender.com/feedbacks/', {
@@ -48,14 +56,15 @@ const CreateFeedback = () => {
         <div className="mb-4">
           <label className="block text-gray-700">Questions</label>
           {questions.map((question, index) => (
-            <input
-              key={index}
-              type="text"
-              value={question.text}
-              onChange={(e) => handleQuestionChange(index, e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md mb-2"
-              required
-            />
+            <div key={index} className="mb-2">
+              <input
+                type="text"
+                value={question.text}
+                onChange={(e) => handleQuestionChange(index, e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
           ))}
           <button
             type="button"
