@@ -50,11 +50,12 @@ export default function Login(){
                     </div>
                     <div className="flex flex-col justify-center items-center w-[100%] gap-8">
                     
-                    <input type="email" placeholder="Email" name = "Email" className={inputStyle} onChange={handleChange}/>
-                    <input type="password" placeholder="password"  name = "Password" className={inputStyle} onChange={handleChange} />
+                    <input type="email" placeholder="Email (try:test@email.com)" name = "Email" className={inputStyle} onChange={handleChange}/>
+                    <input type="password" placeholder="password (try:test@123)"  name = "Password" className={inputStyle} onChange={handleChange} />
             
                     <button className=" bg-blue-500 rounded-lg w-[20%] p-2 text-white hover:bg-blue-700">Log In</button>
-                    <Link to="/" ><p>Don't have account?</p></Link>
+                    <Link to="/Signup" ><p>Don't have account?</p></Link>
+                    <p className="text-red-400">Might take up to 50 sec for first try</p>
                     </div>
                 </form>
        </main> 
